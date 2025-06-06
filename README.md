@@ -4,6 +4,7 @@
   <img src="public/logo.png" alt="DevKit Pro Logo" width="120" />
   <h3>Your Ultimate Developer Toolbox</h3>
   <p>A comprehensive collection of browser-based tools for developers, designers, and content creators.</p>
+  <p><a href="https://devkit-pro.vercel.app" target="_blank">View Live Demo</a></p>
   
   <div>
     <img src="https://img.shields.io/badge/Next.js-14.0.4-black" alt="Next.js" />
