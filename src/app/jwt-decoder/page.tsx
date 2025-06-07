@@ -117,29 +117,53 @@ export default function JwtDecoderPage() {
       const parts = tokenToDecode.split('.')
       if (parts.length !== 3) {
         setError("Invalid JWT format. A JWT consists of three parts separated by dots.")
+        setHeader(null)
+        setPayload(null)
+        setSignature("")
         return
       }
       
-      // Decode header
-      const decodedHeader = jwtDecode<JwtHeader>(tokenToDecode, { header: true })
-      setHeader(decodedHeader)
-      
-      // Decode payload
-      const decodedPayload = jwtDecode<JwtPayload>(tokenToDecode)
-      setPayload(decodedPayload)
-      
-      // Set signature (we can't decode this part, just store it)
-      setSignature(parts[2])
-      
-      // Add to history if not already there
-      if (!tokenHistory.includes(tokenToDecode)) {
-        setTokenHistory(prev => [tokenToDecode, ...prev].slice(0, 10))
+      try {
+        // Decode header
+        const decodedHeader = jwtDecode<JwtHeader>(tokenToDecode, { header: true })
+        setHeader(decodedHeader)
+        
+        // Decode payload
+        const decodedPayload = jwtDecode<JwtPayload>(tokenToDecode)
+        setPayload(decodedPayload)
+        
+        // Set signature (we can't decode this part, just store it)
+        setSignature(parts[2])
+        
+        // Add to history if not already there
+        if (!tokenHistory.includes(tokenToDecode)) {
+          setTokenHistory(prev => [tokenToDecode, ...prev].slice(0, 10))
+        }
+        
+        setToken(tokenToDecode)
+      } catch (decodeErr) {
+        console.error('Error decoding JWT:', decodeErr)
+        
+        // Provide more specific error messages
+        if (decodeErr instanceof Error) {
+          if (decodeErr.message.includes('Invalid token')) {
+            setError("Invalid token format. The token could not be decoded.")
+          } else if (decodeErr.message.includes('JWT malformed')) {
+            setError("JWT is malformed. Check if the token is correctly formatted.")
+          } else {
+            setError(`Failed to decode JWT: ${decodeErr.message}`)
+          }
+        } else {
+          setError("Failed to decode JWT. Please check if the token is valid.")
+        }
+        
+        setHeader(null)
+        setPayload(null)
+        setSignature("")
       }
-      
-      setToken(tokenToDecode)
     } catch (err) {
-      console.error('Error decoding JWT:', err)
-      setError("Failed to decode JWT. Please check if the token is valid.")
+      console.error('Error processing JWT:', err)
+      setError("An unexpected error occurred while processing the token.")
       setHeader(null)
       setPayload(null)
       setSignature("")

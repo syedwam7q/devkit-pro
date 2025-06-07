@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Regex, Copy, BookOpen } from "lucide-react"
+import { Regex, Copy, BookOpen, Info } from "lucide-react"
 
 const commonPatterns = [
   { name: "Email", pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$" },
@@ -18,21 +18,80 @@ const commonPatterns = [
   { name: "Hex Color", pattern: "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$" },
 ]
 
+// Helper function to explain regex patterns
+const explainRegex = (pattern: string): string[] => {
+  if (!pattern) return [];
+  
+  const explanations: string[] = [];
+  
+  // Character classes
+  if (pattern.includes('[0-9]') || pattern.includes('\\d')) 
+    explanations.push('Matches any digit (0-9)');
+  if (pattern.includes('[a-z]')) 
+    explanations.push('Matches any lowercase letter (a-z)');
+  if (pattern.includes('[A-Z]')) 
+    explanations.push('Matches any uppercase letter (A-Z)');
+  if (pattern.includes('[a-zA-Z]')) 
+    explanations.push('Matches any letter (a-z, A-Z)');
+  if (pattern.includes('\\w')) 
+    explanations.push('Matches any word character (alphanumeric + underscore)');
+  if (pattern.includes('\\s')) 
+    explanations.push('Matches any whitespace character (space, tab, newline)');
+  
+  // Anchors
+  if (pattern.includes('^')) 
+    explanations.push('^ matches the start of the string');
+  if (pattern.includes('$')) 
+    explanations.push('$ matches the end of the string');
+  
+  // Quantifiers
+  if (pattern.includes('*')) 
+    explanations.push('* matches 0 or more of the preceding character/group');
+  if (pattern.includes('+')) 
+    explanations.push('+ matches 1 or more of the preceding character/group');
+  if (pattern.includes('?')) 
+    explanations.push('? matches 0 or 1 of the preceding character/group');
+  if (pattern.match(/\{\d+,?\d*\}/)) 
+    explanations.push('{n,m} matches between n and m of the preceding character/group');
+  
+  // Groups and alternation
+  if (pattern.includes('(') && pattern.includes(')')) 
+    explanations.push('(...) creates a capturing group');
+  if (pattern.includes('|')) 
+    explanations.push('| acts as an OR operator between alternatives');
+  
+  // Escapes
+  if (pattern.includes('\\')) 
+    explanations.push('\\x escapes a special character x or introduces a special sequence');
+  
+  return explanations;
+};
+
 export default function RegexTesterPage() {
   const [pattern, setPattern] = useState("")
   const [flags, setFlags] = useState("g")
   const [testString, setTestString] = useState("")
   const [error, setError] = useState("")
+  const [showExplanation, setShowExplanation] = useState(false)
 
   const results = useMemo(() => {
-    if (!pattern || !testString) {
+    if (!pattern) {
       return { matches: [], isValid: true }
     }
 
     try {
       const regex = new RegExp(pattern, flags)
+      
+      // If there's no test string, just validate the regex
+      if (!testString) {
+        setError("")
+        return { matches: [], isValid: true }
+      }
+      
+      // Get all matches
       const matches = Array.from(testString.matchAll(regex))
       setError("")
+      
       return {
         matches: matches.map((match, index) => ({
           index,
@@ -44,7 +103,23 @@ export default function RegexTesterPage() {
         isValid: true
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Invalid regex pattern")
+      // Provide more specific error messages
+      if (err instanceof Error) {
+        if (err.message.includes('Invalid regular expression')) {
+          // Extract the specific syntax error if available
+          const errorMatch = err.message.match(/Invalid regular expression:(.+)/)
+          if (errorMatch && errorMatch[1]) {
+            setError(`Invalid regex: ${errorMatch[1].trim()}`)
+          } else {
+            setError(err.message)
+          }
+        } else {
+          setError(err.message)
+        }
+      } else {
+        setError("Invalid regex pattern")
+      }
+      
       return { matches: [], isValid: false }
     }
   }, [pattern, flags, testString])
@@ -52,21 +127,45 @@ export default function RegexTesterPage() {
   const highlightMatches = (text: string) => {
     if (!results.matches.length) return text
 
-    let highlighted = text
-    let offset = 0
-
-    results.matches.forEach((match) => {
-      const start = match.start + offset
-      const end = match.end + offset
-      const before = highlighted.slice(0, start)
-      const matchText = highlighted.slice(start, end)
-      const after = highlighted.slice(end)
+    // Sort matches by start position to handle them in order
+    const sortedMatches = [...results.matches].sort((a, b) => a.start - b.start)
+    
+    // Create an array of segments to build the highlighted text
+    const segments: { text: string; isMatch: boolean }[] = []
+    let lastEnd = 0
+    
+    sortedMatches.forEach((match) => {
+      // Add text before this match if there is any
+      if (match.start > lastEnd) {
+        segments.push({
+          text: text.slice(lastEnd, match.start),
+          isMatch: false
+        })
+      }
       
-      highlighted = before + `<mark class="bg-yellow-200 dark:bg-yellow-800">${matchText}</mark>` + after
-      offset += 47 // Length of mark tags
+      // Add the matched text
+      segments.push({
+        text: text.slice(match.start, match.end),
+        isMatch: true
+      })
+      
+      lastEnd = match.end
     })
-
-    return highlighted
+    
+    // Add any remaining text after the last match
+    if (lastEnd < text.length) {
+      segments.push({
+        text: text.slice(lastEnd),
+        isMatch: false
+      })
+    }
+    
+    // Build the highlighted HTML
+    return segments.map(segment => 
+      segment.isMatch 
+        ? `<mark class="bg-yellow-200 dark:bg-yellow-800">${segment.text}</mark>` 
+        : segment.text
+    ).join('')
   }
 
   const copyPattern = async () => {
@@ -136,9 +235,39 @@ export default function RegexTesterPage() {
 
             {results.isValid && pattern && (
               <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
-                <p className="text-green-700 dark:text-green-300 text-sm">
-                  ✅ Valid regex pattern
-                </p>
+                <div className="flex justify-between items-center">
+                  <p className="text-green-700 dark:text-green-300 text-sm">
+                    ✅ Valid regex pattern
+                  </p>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => setShowExplanation(!showExplanation)}
+                    className="h-8 px-2"
+                  >
+                    <Info className="h-4 w-4 mr-1" />
+                    {showExplanation ? "Hide" : "Explain"} Pattern
+                  </Button>
+                </div>
+                
+                {showExplanation && (
+                  <div className="mt-3 pt-3 border-t border-green-200 dark:border-green-800">
+                    <h4 className="text-sm font-medium text-green-700 dark:text-green-300 mb-2">
+                      Pattern Explanation
+                    </h4>
+                    {explainRegex(pattern).length > 0 ? (
+                      <ul className="list-disc list-inside text-sm text-green-700 dark:text-green-300 space-y-1">
+                        {explainRegex(pattern).map((explanation, i) => (
+                          <li key={i}>{explanation}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-green-700 dark:text-green-300">
+                        No specific explanation available for this pattern.
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </CardContent>
