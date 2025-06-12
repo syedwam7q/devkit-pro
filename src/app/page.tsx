@@ -26,7 +26,7 @@ const categories = [
   },
   {
     title: "Developer Tools",
-    description: "JSON, CSV/Excel, API testing, regex, encoding, and more",
+    description: "JSON, CSV/Excel, API testing, HTML/CSS playground, and more",
     icon: Code,
     tools: ["JSON Formatter", "CSV/Excel Viewer", "API Tester", "Regex Tester", "Password Generator", "Base64 Encoder", "UUID Generator"],
     href: "/json-formatter"
