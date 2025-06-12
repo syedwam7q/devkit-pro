@@ -229,14 +229,7 @@ function ImageCompressor() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-    FileUpload 
-              onFileChange={handleFileChange}
-              acceptedFileTypes={['image/jpeg', 'image/png', 'image/webp']}
-              maxFileSizeMB={10}
-              label="Drag & drop your image here or click to browse"
-              showPreview={true}
-            />
-    <div className="p-2 bg-primary/10 rounded-lg">
+        <div className="p-2 bg-primary/10 rounded-lg">
           <ImageIcon className="h-6 w-6 text-primary" />
         </div>
         <div>
