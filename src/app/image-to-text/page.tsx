@@ -7,7 +7,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { ScanText, Copy, Loader2 } from "lucide-react"
 import { ToolLayout } from "@/components/tool-layout"
 import { FileUpload } from "@/components/file-upload"
-import { createWorker } from 'tesseract.js'
+// @ts-ignore - Import without type checking
+import * as Tesseract from 'tesseract.js'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 // Available languages for OCR
@@ -89,26 +90,26 @@ function ImageToText() {
     setExtractedText("")
     
     try {
-      // @ts-ignore - Tesseract types are not correctly defined
-      const worker = await createWorker({
-        logger: m => {
-          if (m.status === 'recognizing text') {
-            setProgress(m.progress * 100)
-          }
-        },
-      })
+      // Create worker without type checking
+      const worker = await Tesseract.createWorker();
       
-      // @ts-ignore - Tesseract types are not correctly defined
-      await worker.loadLanguage(language)
-      // @ts-ignore - Tesseract types are not correctly defined
-      await worker.initialize(language)
+      // Set up progress tracking
+      worker.setProgressHandler((m: any) => {
+        if (m.status === 'recognizing text') {
+          setProgress(m.progress * 100);
+        }
+      });
       
-      // @ts-ignore - Tesseract types are not correctly defined
-      const { data } = await worker.recognize(imageFile)
-      setExtractedText(data.text)
+      // Load language and initialize
+      await worker.loadLanguage(language);
+      await worker.initialize(language);
       
-      // @ts-ignore - Tesseract types are not correctly defined
-      await worker.terminate()
+      // Recognize text
+      const { data } = await worker.recognize(imageFile);
+      setExtractedText(data.text);
+      
+      // Clean up
+      await worker.terminate();
     } catch (err) {
       console.error('OCR Error:', err)
       setError("An error occurred during text extraction. Please try again with a different image.")
