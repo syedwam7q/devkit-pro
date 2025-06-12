@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Copy, Type } from "lucide-react"
+import { ToolLayout } from "@/components/tool-layout"
 
 const formatOptions = [
   { name: "UPPERCASE", fn: (text: string) => text.toUpperCase() },
@@ -18,6 +19,14 @@ const formatOptions = [
 ]
 
 export default function TextFormatterPage() {
+  return (
+    <ToolLayout>
+      <TextFormatter />
+    </ToolLayout>
+  )
+}
+
+function TextFormatter() {
   const [inputText, setInputText] = useState("")
   const [outputText, setOutputText] = useState("")
   const [selectedFormat, setSelectedFormat] = useState("")

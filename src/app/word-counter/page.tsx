@@ -4,8 +4,17 @@ import { useState, useMemo } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Hash } from "lucide-react"
+import { ToolLayout } from "@/components/tool-layout"
 
 export default function WordCounterPage() {
+  return (
+    <ToolLayout>
+      <WordCounter />
+    </ToolLayout>
+  )
+}
+
+function WordCounter() {
   const [text, setText] = useState("")
 
   const stats = useMemo(() => {

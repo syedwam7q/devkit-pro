@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { useUserPreferences } from "@/lib/store"
 import {
   Type,
   Image,
@@ -24,7 +25,13 @@ import {
   FileSpreadsheet,
   Globe,
   Lock,
-  QrCode
+  QrCode,
+  Settings,
+  ChevronRight,
+  ChevronDown,
+  Star,
+  Clock,
+  Home
 } from "lucide-react"
 
 const tools = [
@@ -76,14 +83,75 @@ const tools = [
   }
 ]
 
+// Flatten all tools for easy lookup
+const allTools = tools.flatMap(category => 
+  category.items.map(item => ({
+    ...item,
+    category: category.category
+  }))
+)
+
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    "Text Tools": true,
+    "Image Tools": true,
+    "Developer Tools": true,
+    "Advanced Tools": true,
+    "Quick Access": true
+  })
   const pathname = usePathname()
+  const { 
+    sidebarCollapsed, 
+    setSidebarCollapsed,
+    favoriteTools,
+    recentTools,
+    addRecentTool,
+    fontSize
+  } = useUserPreferences()
+
+  // Track current tool for recent tools
+  useEffect(() => {
+    if (pathname === "/" || pathname === "/settings") return
+    
+    const currentTool = allTools.find(tool => tool.href === pathname)
+    if (currentTool) {
+      const toolIcon = currentTool.icon
+      // Get the SVG path for the icon
+      const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${getIconPath(toolIcon.name)}</svg>`
+      
+      addRecentTool({
+        name: currentTool.name,
+        href: currentTool.href,
+        icon: iconSvg
+      })
+    }
+  }, [pathname, addRecentTool])
+
+  // Toggle section expansion
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }))
+  }
+
+  // Font size classes based on user preference
+  const fontSizeClasses = {
+    small: "text-xs",
+    medium: "text-sm",
+    large: "text-base"
+  }
 
   const SidebarContent = () => (
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between p-4 border-b">
-        <h1 className="text-xl font-bold">DevKit Pro</h1>
+        <Link href="/" className="flex items-center gap-2">
+          <div className="p-1 bg-primary/10 rounded-md">
+            <Code className="h-5 w-5 text-primary" />
+          </div>
+          <h1 className="text-xl font-bold">DevKit Pro</h1>
+        </Link>
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <Button
@@ -98,53 +166,172 @@ export function Sidebar() {
       </div>
       
       <nav className="flex-1 overflow-y-auto p-4">
-        <div className="space-y-6">
+        <div className="space-y-5">
+          {/* Home link */}
+          <div>
+            <Link
+              href="/"
+              onClick={() => setIsOpen(false)}
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-accent hover:text-accent-foreground",
+                pathname === "/" ? "bg-accent text-accent-foreground" : "text-muted-foreground",
+                fontSizeClasses[fontSize]
+              )}
+            >
+              <Home className="h-4 w-4" />
+              Dashboard
+            </Link>
+          </div>
+
+          {/* Quick Access Section */}
+          <div>
+            <div 
+              className="flex items-center justify-between mb-2 cursor-pointer"
+              onClick={() => toggleSection("Quick Access")}
+            >
+              <h3 className={cn("text-sm font-semibold text-muted-foreground uppercase tracking-wider", fontSizeClasses[fontSize])}>
+                Quick Access
+              </h3>
+              {expandedSections["Quick Access"] ? (
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              )}
+            </div>
+            
+            {expandedSections["Quick Access"] && (
+              <div className="space-y-1 mb-2">
+                {/* Favorites Section */}
+                {favoriteTools.length > 0 && (
+                  <div className="pl-2 space-y-1 mb-2">
+                    <h4 className={cn("text-xs text-muted-foreground flex items-center gap-2", fontSizeClasses[fontSize])}>
+                      <Star className="h-3 w-3" /> Favorites
+                    </h4>
+                    <div className="space-y-1">
+                      {favoriteTools.slice(0, 5).map((tool) => (
+                        <Link
+                          key={tool.href}
+                          href={tool.href}
+                          onClick={() => setIsOpen(false)}
+                          className={cn(
+                            "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-accent hover:text-accent-foreground",
+                            pathname === tool.href ? "bg-accent text-accent-foreground" : "text-muted-foreground",
+                            fontSizeClasses[fontSize]
+                          )}
+                        >
+                          <span className="text-primary" dangerouslySetInnerHTML={{ __html: tool.icon }} />
+                          {tool.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Recent Section */}
+                {recentTools.length > 0 && (
+                  <div className="pl-2 space-y-1">
+                    <h4 className={cn("text-xs text-muted-foreground flex items-center gap-2", fontSizeClasses[fontSize])}>
+                      <Clock className="h-3 w-3" /> Recent
+                    </h4>
+                    <div className="space-y-1">
+                      {recentTools.slice(0, 5).map((tool) => (
+                        <Link
+                          key={tool.href}
+                          href={tool.href}
+                          onClick={() => setIsOpen(false)}
+                          className={cn(
+                            "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-accent hover:text-accent-foreground",
+                            pathname === tool.href ? "bg-accent text-accent-foreground" : "text-muted-foreground",
+                            fontSizeClasses[fontSize]
+                          )}
+                        >
+                          <span className="text-primary" dangerouslySetInnerHTML={{ __html: tool.icon }} />
+                          {tool.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          
+          {/* Tool Categories */}
           {tools.map((category) => (
             <div key={category.category}>
-              <h3 className="mb-2 text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                {category.category}
-              </h3>
-              <div className="space-y-1">
-                {category.items.map((item) => {
-                  const Icon = item.icon
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setIsOpen(false)}
-                      className={cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground",
-                        pathname === item.href ? "bg-accent text-accent-foreground" : "text-muted-foreground"
-                      )}
-                    >
-                      <Icon className="h-4 w-4" />
-                      {item.name}
-                    </Link>
-                  )
-                })}
+              <div 
+                className="flex items-center justify-between mb-2 cursor-pointer"
+                onClick={() => toggleSection(category.category)}
+              >
+                <h3 className={cn("text-sm font-semibold text-muted-foreground uppercase tracking-wider", fontSizeClasses[fontSize])}>
+                  {category.category}
+                </h3>
+                {expandedSections[category.category] ? (
+                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                )}
               </div>
+              
+              {expandedSections[category.category] && (
+                <div className="space-y-1">
+                  {category.items.map((item) => {
+                    const Icon = item.icon
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setIsOpen(false)}
+                        className={cn(
+                          "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-accent hover:text-accent-foreground",
+                          pathname === item.href ? "bg-accent text-accent-foreground" : "text-muted-foreground",
+                          fontSizeClasses[fontSize]
+                        )}
+                      >
+                        <Icon className="h-4 w-4" />
+                        {item.name}
+                      </Link>
+                    )
+                  })}
+                </div>
+              )}
             </div>
           ))}
         </div>
       </nav>
       
-      <div className="p-4 border-t text-xs text-muted-foreground">
-        <div className="flex flex-col space-y-1">
-          <p>Developed by: Syed Wamiq</p>
-          <div className="flex items-center gap-2">
-            <a 
-              href="https://github.com/syedwam7q" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center hover:text-foreground transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-              </svg>
-              github.com/syedwam7q
-            </a>
+      <div className="p-4 border-t">
+        <Link
+          href="/settings"
+          onClick={() => setIsOpen(false)}
+          className={cn(
+            "flex items-center gap-3 rounded-lg px-3 py-2 mb-4 transition-colors hover:bg-accent hover:text-accent-foreground",
+            pathname === "/settings" ? "bg-accent text-accent-foreground" : "text-muted-foreground",
+            fontSizeClasses[fontSize]
+          )}
+        >
+          <Settings className="h-4 w-4" />
+          Settings
+        </Link>
+        
+        <div className="text-xs text-muted-foreground">
+          <div className="flex flex-col space-y-1">
+            <p>Developed by: Syed Wamiq</p>
+            <div className="flex items-center gap-2">
+              <a 
+                href="https://github.com/syedwam7q" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center hover:text-foreground transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                </svg>
+                github.com/syedwam7q
+              </a>
+            </div>
+            <p>© {new Date().getFullYear()} DevKit Pro</p>
           </div>
-          <p>© {new Date().getFullYear()} DevKit Pro</p>
         </div>
       </div>
     </div>
@@ -186,4 +373,28 @@ export function Sidebar() {
       </aside>
     </>
   )
+}
+
+// Helper function to get SVG path for an icon
+function getIconPath(iconName: string): string {
+  const iconPaths: Record<string, string> = {
+    'Type': '<path d="M4 7V4h16v3"></path><path d="M9 20h6"></path><path d="M12 4v16"></path>',
+    'Image': '<rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>',
+    'Code': '<polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline>',
+    'Wand2': '<path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path>',
+    'Hash': '<line x1="4" x2="20" y1="9" y2="9"></line><line x1="4" x2="20" y1="15" y2="15"></line><line x1="10" x2="8" y1="3" y2="21"></line><line x1="16" x2="14" y1="3" y2="21"></line>',
+    'FileText': '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line>',
+    'Palette': '<circle cx="13.5" cy="6.5" r=".5"></circle><circle cx="17.5" cy="10.5" r=".5"></circle><circle cx="8.5" cy="7.5" r=".5"></circle><circle cx="6.5" cy="12.5" r=".5"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path>',
+    'Regex': '<path d="M17 3v10"></path><path d="m12.67 5.5 8.66 5"></path><path d="m12.67 10.5 8.66-5"></path><path d="M9 17a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2z"></path>',
+    'Key': '<circle cx="7.5" cy="15.5" r="5.5"></circle><path d="m21 2-9.6 9.6"></path><path d="m15.5 7.5 3 3L22 7l-3-3"></path>',
+    'Link': '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>',
+    'Diff': '<path d="M12 3v14"></path><path d="M5 10h14"></path><path d="M5 21h14"></path>',
+    'Smile': '<circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" x2="9.01" y1="9" y2="9"></line><line x1="15" x2="15.01" y1="9" y2="9"></line>',
+    'FileSpreadsheet': '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M8 13h2"></path><path d="M8 17h2"></path><path d="M14 13h2"></path><path d="M14 17h2"></path>',
+    'Globe': '<circle cx="12" cy="12" r="10"></circle><line x1="2" x2="22" y1="12" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>',
+    'Lock': '<rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>',
+    'QrCode': '<rect width="5" height="5" x="3" y="3" rx="1"></rect><rect width="5" height="5" x="16" y="3" rx="1"></rect><rect width="5" height="5" x="3" y="16" rx="1"></rect><path d="M21 16h-3a2 2 0 0 0-2 2v3"></path><path d="M21 21v.01"></path><path d="M12 7v3a2 2 0 0 1-2 2H7"></path><path d="M3 12h.01"></path><path d="M12 3h.01"></path><path d="M12 16v.01"></path><path d="M16 12h1"></path><path d="M21 12v.01"></path><path d="M12 21v-1"></path>'
+  }
+  
+  return iconPaths[iconName] || ''
 }

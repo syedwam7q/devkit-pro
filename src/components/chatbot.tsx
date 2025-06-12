@@ -161,7 +161,7 @@ const helpfulResponses = [
   },
   {
     trigger: ["help", "assist", "support"],
-    response: "I'm here to help! You can ask me about any of our tools, how to use them, or what they do. For example, try asking 'How do I resize an image?' or 'What can the JSON formatter do?'"
+    response: "HOW I CAN HELP YOU\n\nFind Tools:\n• Ask about specific tasks (e.g., \"How do I resize an image?\")\n• Browse categories (e.g., \"Show me text tools\")\n• Type 'list tools' to see all available tools\n\nLearn Features:\n• Type 'shortcuts' for keyboard shortcuts\n• Type 'favorites' to learn about saving tools\n• Type 'settings' for customization options\n\nNavigation:\n• Ask me to take you to any tool\n• Request the home page or settings\n\nJust type what you need or ask a question!"
   },
   {
     trigger: ["thank", "thanks", "appreciate"],
@@ -177,11 +177,31 @@ const helpfulResponses = [
   },
   {
     trigger: ["features", "capabilities", "what can you do", "how can you help"],
-    response: "I can help you with:\n• Finding the right tool for your task\n• Explaining how each tool works\n• Navigating directly to any tool\n• Answering questions about tool features\n• Providing guidance on how to use our tools\n\nJust tell me what you're trying to accomplish!"
+    response: "I can help you with:\n• Finding the right tool for your task\n• Explaining how each tool works\n• Navigating directly to any tool\n• Answering questions about tool features\n• Providing guidance on how to use our tools\n• Information about keyboard shortcuts\n• Managing your favorite tools\n\nJust tell me what you're trying to accomplish!"
   },
   {
     trigger: ["who made", "who created", "who developed", "who built", "creator", "developer", "author"],
     response: "DevKit Pro was developed by Syed Wamiq. You can find more of his work on GitHub at github.com/syedwam7q."
+  },
+  {
+    trigger: ["keyboard", "shortcuts", "hotkeys", "key", "keys"],
+    response: "KEYBOARD SHORTCUTS\n\nShow keyboard shortcuts\n?\n\nClose dialogs or cancel actions\nEsc\n\nNAVIGATION\nFocus search\n/\nGo to home\ng h\nGo to settings\ng s\nGo to favorites\ng f\n\nAPPEARANCE\nToggle theme (light/dark)\nt\n\nTOOLS\nSave current work (when applicable)\nCtrl+s\nDownload result (when applicable)\nCtrl+d\nCopy to clipboard (when applicable)\nCtrl+c\n\nPress the ? key anywhere in the app to see all shortcuts."
+  },
+  {
+    trigger: ["favorite", "favourites", "bookmark", "save tool", "quick access"],
+    response: "MANAGING FAVORITES\n\nAdding Tools:\n• Click the star icon when viewing any tool\n• Tools with filled stars are already in your favorites\n\nViewing Favorites:\n• Go to the dashboard and click the 'Favorites' tab\n• Your favorite tools appear in a grid for quick access\n\nOrganizing:\n• Drag and drop to reorder your favorites\n• Click the X on any favorite to remove it\n\nFavorites sync across devices when you're logged in."
+  },
+  {
+    trigger: ["mobile", "phone", "tablet", "responsive", "touch"],
+    response: "MOBILE EXPERIENCE\n\nNavigation:\n• Bottom navigation bar for easy access\n• Swipe gestures for common actions\n• Optimized touch targets for all controls\n\nAdaptations:\n• Responsive layouts that adjust to your screen size\n• Simplified interfaces on smaller screens\n• Touch-friendly controls and interactions\n\nPerformance:\n• Fast loading even on slower connections\n• Efficient processing that works well on mobile devices\n• Offline capabilities for many tools"
+  },
+  {
+    trigger: ["theme", "dark mode", "light mode", "appearance"],
+    response: "THEME OPTIONS\n\nSwitching Themes:\n• Click the theme toggle in the top navigation bar\n• Use keyboard shortcut: Ctrl+D / Cmd+D\n• System-based: Automatically follows your device settings\n\nBenefits:\n• Dark mode reduces eye strain at night\n• Light mode offers better visibility in bright environments\n• Your preference is saved for future visits\n\nYou can also set theme preferences in the Settings page."
+  },
+  {
+    trigger: ["settings", "preferences", "customize", "configuration"],
+    response: "SETTINGS & CUSTOMIZATION\n\nAccessing Settings:\n• Click the gear icon in the sidebar\n• Use keyboard shortcut: Ctrl+, / Cmd+,\n\nAvailable Options:\n• UI Density: Compact, Comfortable, or Spacious layouts\n• Font Size: Small, Medium, or Large text\n• Theme Preferences: Light, Dark, or System\n• Sidebar: Default expanded or collapsed state\n\nOther Customizations:\n• Favorites: Personalize your quick access tools\n• Tool Layouts: Some tools have their own settings\n\nAll settings are automatically saved to your browser."
   }
 ]
 
@@ -192,7 +212,7 @@ export function Chatbot() {
     {
       id: "welcome",
       role: "assistant",
-      content: "Hello! I'm your DevKit Pro assistant. How can I help you today?",
+      content: "👋 Hello! I'm your DevKit Pro assistant. I can help you find and use the right tools for your tasks. Type 'help' to see what I can do for you, or just ask me anything!",
       timestamp: new Date()
     }
   ])
@@ -216,6 +236,26 @@ export function Chatbot() {
       inputRef.current.focus()
     }
   }, [isOpen, isMinimized])
+  
+  // Add keyboard shortcut support
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+J or Cmd+J to toggle chat
+      if ((e.ctrlKey || e.metaKey) && e.key === 'j') {
+        e.preventDefault()
+        toggleChat()
+      }
+      
+      // Escape to close chat if open
+      if (e.key === 'Escape' && isOpen) {
+        e.preventDefault()
+        setIsOpen(false)
+      }
+    }
+    
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -524,9 +564,58 @@ export function Chatbot() {
       }
     }
 
+    // Handle keyboard shortcut queries
+    if (input === "shortcuts" || (input.includes("keyboard") && input.includes("shortcut"))) {
+      return {
+        message: "KEYBOARD SHORTCUTS\n\nShow keyboard shortcuts\n?\n\nClose dialogs or cancel actions\nEsc\n\nNAVIGATION\nFocus search\n/\nGo to home\ng h\nGo to settings\ng s\nGo to favorites\ng f\n\nAPPEARANCE\nToggle theme (light/dark)\nt\n\nTOOLS\nSave current work (when applicable)\nCtrl+s\nDownload result (when applicable)\nCtrl+d\nCopy to clipboard (when applicable)\nCtrl+c\n\nPress the ? key anywhere in the app to see all shortcuts."
+      }
+    }
+
+    // Handle favorites queries
+    if (input.includes("favorite") || input.includes("bookmark") || input.includes("star")) {
+      if (input.includes("add") || input.includes("create") || input.includes("how")) {
+        return {
+          message: "To add a tool to your favorites, click the star icon next to the tool name when viewing it. You can manage your favorites from the 'Favorites' tab on the dashboard."
+        }
+      }
+      if (input.includes("remove") || input.includes("delete")) {
+        return {
+          message: "To remove a tool from your favorites, click the star icon again when viewing the tool, or click the X button on the tool card in the Favorites tab."
+        }
+      }
+      if (input.includes("reorder") || input.includes("arrange") || input.includes("move")) {
+        return {
+          message: "You can reorder your favorite tools by dragging and dropping them in the Favorites tab on the dashboard. Just click and hold on a tool card, then drag it to the desired position."
+        }
+      }
+      if (input.includes("view") || input.includes("see") || input.includes("where")) {
+        return {
+          message: "Your favorite tools are displayed in the 'Favorites' tab on the dashboard. Click on the star icon in the tab bar to view them.",
+          action: "navigate",
+          path: "/"
+        }
+      }
+    }
+
+    // Handle settings queries
+    if (input.includes("settings") || input.includes("preferences") || input.includes("customize")) {
+      return {
+        message: "I'll take you to the settings page where you can customize the app to your preferences.",
+        action: "navigate",
+        path: "/settings"
+      }
+    }
+
+    // Handle mobile-specific queries
+    if (input.includes("mobile") || input.includes("phone") || input.includes("tablet") || input.includes("responsive")) {
+      return {
+        message: "DevKit Pro is fully responsive and works great on mobile devices. On smaller screens, you'll see a bottom navigation bar for easy access to key features. All tools are optimized for touch input and smaller screens."
+      }
+    }
+
     // Default response if no specific intent is detected
     return { 
-      message: "I'm not sure I understand what you're looking for. We have tools for text formatting, image editing, code formatting, and more. Could you tell me more about what you're trying to do? Or type 'list tools' to see all available tools." 
+      message: "I'm not sure I understand what you're looking for. We have tools for text formatting, image editing, code formatting, and more. You can also ask me about keyboard shortcuts, favorites, or settings. Could you tell me more about what you're trying to do? Or type 'list tools' to see all available tools." 
     }
   }
 
@@ -545,6 +634,8 @@ export function Chatbot() {
       <Button
         className="fixed bottom-4 right-4 rounded-full h-12 w-12 p-0 shadow-lg"
         onClick={toggleChat}
+        title={`${isOpen ? 'Close' : 'Open'} chat (Ctrl+J)`}
+        aria-label={`${isOpen ? 'Close' : 'Open'} chat`}
       >
         {isOpen ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
       </Button>
