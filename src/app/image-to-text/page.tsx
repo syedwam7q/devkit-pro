@@ -7,8 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ScanText, Copy, Loader2 } from "lucide-react"
 import { ToolLayout } from "@/components/tool-layout"
 import { FileUpload } from "@/components/file-upload"
-// @ts-ignore - Import without type checking
-import * as Tesseract from 'tesseract.js'
+import { createWorker } from 'tesseract.js'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 // Available languages for OCR
@@ -90,14 +89,13 @@ function ImageToText() {
     setExtractedText("")
     
     try {
-      // Create worker without type checking
-      const worker = await Tesseract.createWorker();
-      
-      // Set up progress tracking
-      worker.setProgressHandler((m: any) => {
-        if (m.status === 'recognizing text') {
-          setProgress(m.progress * 100);
-        }
+      // Create worker with proper options
+      const worker = await createWorker({
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            setProgress(m.progress * 100);
+          }
+        },
       });
       
       // Load language and initialize
