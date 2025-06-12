@@ -200,8 +200,8 @@ export default function ApiTesterPage() {
       
       // Try to parse response as JSON, fallback to text
       let data
-      const contentType = res.headers.get("content-type") || ""
-      if (contentType.includes("application/json")) {
+      const responseContentType = res.headers.get("content-type") || ""
+      if (responseContentType.includes("application/json")) {
         data = await res.json()
       } else {
         data = await res.text()
