@@ -104,22 +104,7 @@ yarn test
 
 ## 🌐 Deployment
 
-### Deploying to Vercel
-
-The easiest way to deploy DevKit Pro is to use the [Vercel Platform](https://vercel.com).
-
-1. Push your code to a Git repository (GitHub, GitLab, BitBucket)
-2. Import the project in Vercel
-3. Vercel will detect Next.js and set up the build configuration automatically
-4. Your application will be deployed and available at a Vercel URL
-
-### Other Deployment Options
-
-DevKit Pro can be deployed to any platform that supports Next.js applications:
-
-- **Netlify**: Follow the [Netlify deployment guide for Next.js](https://docs.netlify.com/configure-builds/common-configurations/next-js/)
-- **AWS Amplify**: Use the [AWS Amplify Console](https://docs.aws.amazon.com/amplify/latest/userguide/deploy-nextjs-app.html)
-- **Docker**: Use the provided Dockerfile to containerize the application
+### This version of DevKit Pro (1.0.0) is Live on Vercel (https://vercel.com/syed-wamiqs-projects/devkit-pro)
 
 ## 🧩 Project Structure
 
