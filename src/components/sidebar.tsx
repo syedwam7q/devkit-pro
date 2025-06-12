@@ -20,7 +20,11 @@ import {
   Wand2,
   Smile,
   Menu,
-  X
+  X,
+  FileSpreadsheet,
+  Globe,
+  Lock,
+  QrCode
 } from "lucide-react"
 
 const tools = [
@@ -48,9 +52,12 @@ const tools = [
     icon: Code,
     items: [
       { name: "JSON Formatter", href: "/json-formatter", icon: Code },
+      { name: "CSV/Excel Viewer", href: "/csv-excel-viewer", icon: FileSpreadsheet },
+      { name: "API Tester", href: "/api-tester", icon: Globe },
       { name: "Regex Tester", href: "/regex-tester", icon: Regex },
       { name: "Base64 Encoder", href: "/base64-encoder", icon: Key },
       { name: "UUID Generator", href: "/uuid-generator", icon: Hash },
+      { name: "Password Generator", href: "/password-generator", icon: Lock },
       { name: "JWT Decoder", href: "/jwt-decoder", icon: Key },
       { name: "URL Parser", href: "/url-parser", icon: LinkIcon },
     ]
@@ -61,6 +68,8 @@ const tools = [
     items: [
       { name: "Text Diff", href: "/text-diff", icon: Diff },
       { name: "Code Formatter", href: "/code-formatter", icon: Code },
+      { name: "HTML/CSS Playground", href: "/html-css-playground", icon: Code },
+      { name: "QR Code Generator", href: "/qr-code-generator", icon: QrCode },
       { name: "SVG Generator", href: "/svg-generator", icon: Wand2 },
       { name: "Meme Generator", href: "/meme-generator", icon: Smile },
     ]

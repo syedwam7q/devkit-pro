@@ -26,16 +26,16 @@ const categories = [
   },
   {
     title: "Developer Tools",
-    description: "JSON, regex, encoding, and more",
+    description: "JSON, CSV/Excel, API testing, regex, encoding, and more",
     icon: Code,
-    tools: ["JSON Formatter", "Regex Tester", "Base64 Encoder", "UUID Generator"],
+    tools: ["JSON Formatter", "CSV/Excel Viewer", "API Tester", "Regex Tester", "Password Generator", "Base64 Encoder", "UUID Generator"],
     href: "/json-formatter"
   },
   {
     title: "Advanced Tools",
-    description: "Diff checker, code formatter, and generators",
+    description: "Diff checker, code formatter, HTML/CSS playground, QR codes, and generators",
     icon: Wand2,
-    tools: ["Text Diff", "Code Formatter", "SVG Generator", "Meme Generator"],
+    tools: ["Text Diff", "Code Formatter", "HTML/CSS Playground", "QR Code Generator", "SVG Generator", "Meme Generator"],
     href: "/text-diff"
   }
 ]

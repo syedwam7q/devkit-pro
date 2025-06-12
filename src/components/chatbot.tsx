@@ -20,6 +20,18 @@ interface Message {
 // Tool information for the chatbot to reference
 const toolInfo = [
   {
+    name: "API Tester",
+    path: "/api-tester",
+    description: "Test API endpoints with different methods and parameters",
+    keywords: ["api", "rest", "http", "endpoint", "request", "postman", "fetch", "test"]
+  },
+  {
+    name: "CSV/Excel Viewer",
+    path: "/csv-excel-viewer",
+    description: "View, edit, and convert between CSV and Excel formats",
+    keywords: ["csv", "excel", "spreadsheet", "table", "data", "convert", "edit", "viewer"]
+  },
+  {
     name: "Text Formatter",
     path: "/text-formatter",
     description: "Format and beautify text with various options",
@@ -86,6 +98,12 @@ const toolInfo = [
     keywords: ["uuid", "guid", "generate", "random", "id"]
   },
   {
+    name: "Password Generator",
+    path: "/password-generator",
+    description: "Create secure passwords with customizable options",
+    keywords: ["password", "secure", "generate", "random", "security", "strong"]
+  },
+  {
     name: "JWT Decoder",
     path: "/jwt-decoder",
     description: "Decode and verify JWT tokens",
@@ -108,6 +126,18 @@ const toolInfo = [
     path: "/code-formatter",
     description: "Format and beautify code in various languages",
     keywords: ["code", "format", "beautify", "indent", "syntax", "highlight"]
+  },
+  {
+    name: "HTML/CSS Playground",
+    path: "/html-css-playground",
+    description: "Live preview of HTML, CSS, and JavaScript code",
+    keywords: ["html", "css", "javascript", "js", "preview", "playground", "live", "editor", "web"]
+  },
+  {
+    name: "QR Code Generator",
+    path: "/qr-code-generator",
+    description: "Generate QR codes for URLs, text, contact info, and more",
+    keywords: ["qr", "qrcode", "code", "scan", "url", "contact", "wifi", "vcard", "generate"]
   },
   {
     name: "SVG Generator",
