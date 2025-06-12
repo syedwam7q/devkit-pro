@@ -7,6 +7,9 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useUserPreferences } from "@/lib/store"
+import { Input } from "@/components/ui/input"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { getAllTools, getToolsByCategory } from "@/lib/tool-routes"
 import {
   Home,
   Search,
@@ -17,7 +20,9 @@ import {
   Code,
   Wand2,
   X,
-  ChevronRight
+  ChevronRight,
+  Grid2X2,
+  List
 } from "lucide-react"
 
 // Tool categories for quick access
@@ -51,7 +56,19 @@ const toolCategories = [
 export function MobileNavigation() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [chatbotOpen, setChatbotOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [viewMode, setViewMode] = useState<"all" | "categories">("all")
   const pathname = usePathname()
+  
+  // Get all tools
+  const allTools = getAllTools()
+  
+  // Filter tools based on search query
+  const filteredTools = searchQuery 
+    ? allTools.filter(tool => 
+        tool.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : allTools
   
   // Listen for chatbot state changes
   useEffect(() => {
@@ -113,8 +130,8 @@ export function MobileNavigation() {
               </Button>
             </SheetTrigger>
             <SheetContent side="bottom" className="h-[80vh] rounded-t-xl px-4 pb-8">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold">Tool Categories</h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold">DevKit Tools</h2>
                 <Button 
                   variant="ghost" 
                   size="icon"
@@ -124,34 +141,75 @@ export function MobileNavigation() {
                 </Button>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {toolCategories.map((category) => {
-                  const Icon = category.icon
-                  return (
-                    <Link
-                      key={category.name}
-                      href={category.href}
-                      onClick={() => setSearchOpen(false)}
-                      className="flex items-center gap-3 p-4 rounded-lg border hover:bg-accent active:bg-accent/80 transition-colors"
-                    >
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <Icon className="h-5 w-5 text-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-medium">{category.name}</h3>
-                            <p className="text-xs text-muted-foreground mt-1">{category.description}</p>
-                          </div>
-                          <ChevronRight className="h-4 w-4 text-muted-foreground ml-2 mt-1 flex-shrink-0" />
-                        </div>
-                      </div>
-                    </Link>
-                  )
-                })}
+              <div className="mb-4">
+                <Input
+                  type="search"
+                  placeholder="Search tools..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full"
+                />
               </div>
               
-              {/* We've removed the favorites section */}
+              <Tabs defaultValue="all" className="mb-4">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="all" onClick={() => setViewMode("all")}>
+                    <List className="h-4 w-4 mr-2" />
+                    All Tools
+                  </TabsTrigger>
+                  <TabsTrigger value="categories" onClick={() => setViewMode("categories")}>
+                    <Grid2X2 className="h-4 w-4 mr-2" />
+                    Categories
+                  </TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="all" className="mt-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {filteredTools.map((tool) => (
+                      <Link
+                        key={tool.name}
+                        href={tool.route}
+                        onClick={() => setSearchOpen(false)}
+                        className="flex items-center gap-2 p-3 rounded-lg border hover:bg-accent active:bg-accent/80 transition-colors"
+                      >
+                        <div className="flex-1">
+                          <h3 className="font-medium text-sm">{tool.name}</h3>
+                        </div>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      </Link>
+                    ))}
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="categories" className="mt-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {toolCategories.map((category) => {
+                      const Icon = category.icon
+                      return (
+                        <Link
+                          key={category.name}
+                          href={category.href}
+                          onClick={() => setSearchOpen(false)}
+                          className="flex items-center gap-3 p-4 rounded-lg border hover:bg-accent active:bg-accent/80 transition-colors"
+                        >
+                          <div className="p-2 bg-primary/10 rounded-lg">
+                            <Icon className="h-5 w-5 text-primary" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h3 className="font-medium">{category.name}</h3>
+                                <p className="text-xs text-muted-foreground mt-1">{category.description}</p>
+                              </div>
+                              <ChevronRight className="h-4 w-4 text-muted-foreground ml-2 mt-1 flex-shrink-0" />
+                            </div>
+                          </div>
+                        </Link>
+                      )
+                    })}
+                  </div>
+                </TabsContent>
+              </Tabs>
             </SheetContent>
           </Sheet>
           

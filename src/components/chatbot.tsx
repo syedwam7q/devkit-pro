@@ -619,6 +619,26 @@ export function Chatbot() {
     setIsMinimized(prev => !prev)
   }
 
+  // Track if the virtual keyboard is open
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  
+  // Add event listeners for input focus/blur to detect keyboard
+  useEffect(() => {
+    const handleFocus = () => setIsKeyboardOpen(true);
+    const handleBlur = () => setIsKeyboardOpen(false);
+    
+    const inputElement = inputRef.current;
+    if (inputElement) {
+      inputElement.addEventListener('focus', handleFocus);
+      inputElement.addEventListener('blur', handleBlur);
+      
+      return () => {
+        inputElement.removeEventListener('focus', handleFocus);
+        inputElement.removeEventListener('blur', handleBlur);
+      };
+    }
+  }, [isOpen]);
+  
   return (
     <>
       {/* Chat button - hidden on mobile since we use the bottom nav */}
@@ -635,12 +655,17 @@ export function Chatbot() {
       {isOpen && (
         <Card className={`fixed transition-all duration-300 shadow-xl z-50 ${
           // Different positioning for mobile vs desktop
-          'md:bottom-20 md:right-4 md:h-96 md:w-96 md:max-h-[calc(100vh-8rem)]' +
+          'md:bottom-20 md:right-4 md:w-96 md:max-h-[calc(100vh-8rem)]' +
           // On mobile, make it larger and positioned from bottom
-          ' bottom-16 w-full mx-auto max-w-[640px] rounded-b-none rounded-t-xl'
+          ' w-full mx-auto max-w-[640px] rounded-b-none rounded-t-xl'
         } ${
           // Height control based on minimized state
-          isMinimized ? 'h-14' : 'h-[calc(100vh-8rem)] md:h-96'
+          isMinimized ? 'h-14' : 'md:h-96'
+        } ${
+          // Mobile positioning - adjust when keyboard is open
+          isKeyboardOpen 
+            ? 'bottom-0 h-[50vh]' // When keyboard is open, take half the viewport height
+            : 'bottom-16 h-[calc(100vh-8rem)]' // Normal height when keyboard is closed
         }`}>
           <CardHeader className="p-3 border-b flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-medium">DevKit Pro Assistant</CardTitle>
@@ -664,7 +689,11 @@ export function Chatbot() {
           
           {!isMinimized && (
             <>
-              <CardContent className="p-3 overflow-y-auto h-[calc(100%-7rem)] md:h-[calc(100%-7rem)]">
+              <CardContent className={`p-3 overflow-y-auto ${
+                isKeyboardOpen 
+                  ? 'h-[calc(50vh-7rem)]' // Adjust height when keyboard is open
+                  : 'h-[calc(100%-7rem)] md:h-[calc(100%-7rem)]'
+              }`}>
                 <div className="space-y-4">
                   {messages.map(message => (
                     <div
