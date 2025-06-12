@@ -57,7 +57,7 @@ export default function CsvExcelViewerPage() {
               // First row as headers
               const headers = parsedData[0]
               // Rest as data
-              const rows = parsedData.slice(1).filter(row => row.some(cell => cell.trim() !== ''))
+              const rows = parsedData.slice(1).filter(row => row.some(cell => cell.trim() !== '')) as TableData
               setHeaders(headers)
               setData(rows)
               setEditableHeaders([...headers])
@@ -79,13 +79,13 @@ export default function CsvExcelViewerPage() {
         const worksheet = workbook.Sheets[firstSheetName]
         
         // Convert to JSON
-        const jsonData = XLSX.utils.sheet_to_json<Record<string, any>>(worksheet, { header: 1 })
+        const jsonData = XLSX.utils.sheet_to_json<any[]>(worksheet, { header: 1 })
         
         if (jsonData.length > 0) {
           // First row as headers
           const headers = jsonData[0].map(String)
           // Rest as data
-          const rows = jsonData.slice(1).filter(row => row.length > 0)
+          const rows = jsonData.slice(1).filter(row => row.length > 0) as TableData
           setHeaders(headers)
           setData(rows)
           setEditableHeaders([...headers])
