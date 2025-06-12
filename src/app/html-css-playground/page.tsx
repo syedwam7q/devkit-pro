@@ -207,62 +207,62 @@ export default function HtmlCssPlaygroundPage() {
         <Card className="lg:col-span-1">
           <CardHeader className="pb-3">
             <CardTitle>Code Editor</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid grid-cols-3">
                 <TabsTrigger value="html">HTML</TabsTrigger>
                 <TabsTrigger value="css">CSS</TabsTrigger>
                 <TabsTrigger value="js">JavaScript</TabsTrigger>
               </TabsList>
+              <div className="h-[500px] border-t">
+                <TabsContent value="html" className="h-full m-0">
+                  <Editor
+                    height="100%"
+                    defaultLanguage="html"
+                    value={html}
+                    onChange={(value) => setHtml(value || "")}
+                    theme={editorTheme}
+                    options={{
+                      minimap: { enabled: false },
+                      fontSize: 14,
+                      wordWrap: "on",
+                      scrollBeyondLastLine: false,
+                    }}
+                  />
+                </TabsContent>
+                <TabsContent value="css" className="h-full m-0">
+                  <Editor
+                    height="100%"
+                    defaultLanguage="css"
+                    value={css}
+                    onChange={(value) => setCss(value || "")}
+                    theme={editorTheme}
+                    options={{
+                      minimap: { enabled: false },
+                      fontSize: 14,
+                      wordWrap: "on",
+                      scrollBeyondLastLine: false,
+                    }}
+                  />
+                </TabsContent>
+                <TabsContent value="js" className="h-full m-0">
+                  <Editor
+                    height="100%"
+                    defaultLanguage="javascript"
+                    value={js}
+                    onChange={(value) => setJs(value || "")}
+                    theme={editorTheme}
+                    options={{
+                      minimap: { enabled: false },
+                      fontSize: 14,
+                      wordWrap: "on",
+                      scrollBeyondLastLine: false,
+                    }}
+                  />
+                </TabsContent>
+              </div>
             </Tabs>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="h-[500px] border-t">
-              <TabsContent value="html" className="h-full m-0">
-                <Editor
-                  height="100%"
-                  defaultLanguage="html"
-                  value={html}
-                  onChange={(value) => setHtml(value || "")}
-                  theme={editorTheme}
-                  options={{
-                    minimap: { enabled: false },
-                    fontSize: 14,
-                    wordWrap: "on",
-                    scrollBeyondLastLine: false,
-                  }}
-                />
-              </TabsContent>
-              <TabsContent value="css" className="h-full m-0">
-                <Editor
-                  height="100%"
-                  defaultLanguage="css"
-                  value={css}
-                  onChange={(value) => setCss(value || "")}
-                  theme={editorTheme}
-                  options={{
-                    minimap: { enabled: false },
-                    fontSize: 14,
-                    wordWrap: "on",
-                    scrollBeyondLastLine: false,
-                  }}
-                />
-              </TabsContent>
-              <TabsContent value="js" className="h-full m-0">
-                <Editor
-                  height="100%"
-                  defaultLanguage="javascript"
-                  value={js}
-                  onChange={(value) => setJs(value || "")}
-                  theme={editorTheme}
-                  options={{
-                    minimap: { enabled: false },
-                    fontSize: 14,
-                    wordWrap: "on",
-                    scrollBeyondLastLine: false,
-                  }}
-                />
-              </TabsContent>
-            </div>
           </CardContent>
         </Card>
 
