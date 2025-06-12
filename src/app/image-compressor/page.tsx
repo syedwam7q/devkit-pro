@@ -1,12 +1,14 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
-import { Image as ImageIcon, Upload, Download, RotateCcw } from "lucide-react"
+import { Image as ImageIcon, Download, RotateCcw } from "lucide-react"
 import { formatBytes } from "@/lib/utils"
 import imageCompression from "browser-image-compression"
+import { FileUpload } from "@/components/file-upload"
+import { ToolLayout } from "@/components/tool-layout"
 
 // Add type declaration for the window object
 declare global {
@@ -16,6 +18,14 @@ declare global {
 }
 
 export default function ImageCompressorPage() {
+  return (
+    <ToolLayout>
+      <ImageCompressor />
+    </ToolLayout>
+  )
+}
+
+function ImageCompressor() {
   const [originalImage, setOriginalImage] = useState<string | null>(null)
   const [compressedImage, setCompressedImage] = useState<string | null>(null)
   const [originalSize, setOriginalSize] = useState(0)
@@ -24,12 +34,13 @@ export default function ImageCompressorPage() {
   const [fileName, setFileName] = useState("")
   const [imageType, setImageType] = useState("image/jpeg")
   const [isCompressing, setIsCompressing] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
   const [originalFile, setOriginalFile] = useState<File | null>(null)
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
+  const handleFileChange = async (file: File | null) => {
+    if (!file) {
+      reset()
+      return
+    }
 
     setFileName(file.name)
     setOriginalSize(file.size)
@@ -206,9 +217,6 @@ export default function ImageCompressorPage() {
     setFileName("")
     setIsCompressing(false)
     setOriginalFile(null)
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""
-    }
     if (window.qualityChangeTimeout) {
       clearTimeout(window.qualityChangeTimeout)
     }
@@ -221,7 +229,14 @@ export default function ImageCompressorPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-primary/10 rounded-lg">
+    FileUpload 
+              onFileChange={handleFileChange}
+              acceptedFileTypes={['image/jpeg', 'image/png', 'image/webp']}
+              maxFileSizeMB={10}
+              label="Drag & drop your image here or click to browse"
+              showPreview={true}
+            />
+    <div className="p-2 bg-primary/10 rounded-lg">
           <ImageIcon className="h-6 w-6 text-primary" />
         </div>
         <div>
@@ -236,34 +251,23 @@ export default function ImageCompressorPage() {
         <CardHeader>
           <CardTitle>Upload Image</CardTitle>
           <CardDescription>
-            Select an image file to compress (JPG, PNG, WebP)
-          </CardDescription>
+          Select an image file to compress (JPG, PNG, WebP)
+        </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="w-full">
           <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <Button onClick={() => fileInputRef.current?.click()}>
-                <Upload className="mr-2 h-4 w-4" />
-                Choose Image
-              </Button>
-              {originalImage && (
-                <Button onClick={reset} variant="outline">
-                  <RotateCcw className="mr-2 h-4 w-4" />
-                  Reset
-                </Button>
-              )}
-            </div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              onChange={handleFileUpload}
-              className="hidden"
+            <FileUpload 
+              onFileChange={handleFileChange}
+              acceptedFileTypes={['image/jpeg', 'image/png', 'image/webp']}
+              maxFileSizeMB={10}
+              label="Drag & drop your image here or click to browse"
+              showPreview={true}
             />
-            {fileName && (
-              <p className="text-sm text-muted-foreground">
-                Selected: {fileName}
-              </p>
+            {originalImage && (
+              <Button onClick={reset} variant="outline" className="w-full">
+                <RotateCcw className="mr-2 h-4 w-4" />
+                Reset
+              </Button>
             )}
           </div>
         </CardContent>

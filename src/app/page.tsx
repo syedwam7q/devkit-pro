@@ -13,23 +13,24 @@ const categories = [
   },
   {
     title: "Image Tools", 
-    description: "Resize, compress, and manipulate images",
+    description: "Resize, compress, manipulate images, and extract text",
     icon: "Image",
-    tools: ["Image Resizer", "Image Compressor", "Color Picker", "Image Converter"],
+    tools: ["Image Resizer", "Image Compressor", "Color Picker", "Image Converter", "Image to Text"],
     href: "/image-resizer"
   },
+  // Document Tools category removed - PDF Viewer moved to Developer Tools
   {
     title: "Developer Tools",
-    description: "JSON, CSV/Excel, API testing, HTML/CSS playground, and more",
+    description: "PDF viewer, JSON, CSV/Excel, API testing, and more developer utilities",
     icon: "Code",
-    tools: ["JSON Formatter", "CSV/Excel Viewer", "API Tester", "HTML/CSS Playground", "Regex Tester", "Password Generator", "QR Code Generator", "Base64 Encoder", "UUID Generator"],
-    href: "/json-formatter"
+    tools: ["PDF Viewer", "JSON Formatter", "CSV/Excel Viewer", "API Tester", "Regex Tester", "Password Generator", "Base64 Encoder", "UUID Generator", "JWT Decoder", "URL Parser"],
+    href: "/pdf-viewer"
   },
   {
     title: "Advanced Tools",
-    description: "Diff checker, code formatter, HTML/CSS playground, QR codes, and generators",
+    description: "Diff checker, code formatter, SVG and meme generators",
     icon: "Wand2",
-    tools: ["Text Diff", "Code Formatter", "HTML/CSS Playground", "QR Code Generator", "SVG Generator", "Meme Generator"],
+    tools: ["Text Diff", "Code Formatter", "HTML/CSS Playground", "SVG Generator", "Meme Generator"],
     href: "/text-diff"
   }
 ]

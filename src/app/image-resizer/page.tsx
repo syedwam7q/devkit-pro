@@ -4,22 +4,33 @@ import { useState, useRef } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Image, Upload, Download, RotateCcw } from "lucide-react"
+import { Image, Download, RotateCcw } from "lucide-react"
 import { formatBytes } from "@/lib/utils"
+import { FileUpload } from "@/components/file-upload"
+import { ToolLayout } from "@/components/tool-layout"
 
 export default function ImageResizerPage() {
+  return (
+    <ToolLayout>
+      <ImageResizer />
+    </ToolLayout>
+  )
+}
+
+function ImageResizer() {
   const [originalImage, setOriginalImage] = useState<string | null>(null)
   const [resizedImage, setResizedImage] = useState<string | null>(null)
   const [originalSize, setOriginalSize] = useState({ width: 0, height: 0, fileSize: 0 })
   const [targetSize, setTargetSize] = useState({ width: 0, height: 0 })
   const [maintainAspectRatio, setMaintainAspectRatio] = useState(true)
   const [fileName, setFileName] = useState("")
-  const fileInputRef = useRef<HTMLInputElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
+  
+  const handleFileChange = (file: File | null) => {
+    if (!file) {
+      reset()
+      return
+    }
 
     setFileName(file.name)
     const reader = new FileReader()
@@ -95,9 +106,6 @@ export default function ImageResizerPage() {
     setOriginalSize({ width: 0, height: 0, fileSize: 0 })
     setTargetSize({ width: 0, height: 0 })
     setFileName("")
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""
-    }
   }
 
   return (
@@ -121,31 +129,20 @@ export default function ImageResizerPage() {
             Select an image file to resize (JPG, PNG, GIF, WebP)
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <Button onClick={() => fileInputRef.current?.click()}>
-                <Upload className="mr-2 h-4 w-4" />
-                Choose Image
-              </Button>
-              {originalImage && (
-                <Button onClick={reset} variant="outline">
-                  <RotateCcw className="mr-2 h-4 w-4" />
-                  Reset
-                </Button>
-              )}
-            </div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFileUpload}
-              className="hidden"
+        <CardContent className="w-full">
+        <div className="space-y-4">
+          <FileUpload 
+              onFileChange={handleFileChange}
+              acceptedFileTypes={['image/jpeg', 'image/png', 'image/gif', 'image/webp']}
+              maxFileSizeMB={5}
+              label="Drag & drop your image here or click to browse"
+              showPreview={true}
             />
-            {fileName && (
-              <p className="text-sm text-muted-foreground">
-                Selected: {fileName}
-              </p>
+            {originalImage && (
+              <Button onClick={reset} variant="outline" className="w-full">
+                <RotateCcw className="mr-2 h-4 w-4" />
+                Reset
+              </Button>
             )}
           </div>
         </CardContent>

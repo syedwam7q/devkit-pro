@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
@@ -10,8 +10,7 @@ import { useUserPreferences } from "@/lib/store"
 import {
   Home,
   Search,
-  Star,
-  Menu,
+  MessageCircle,
   Settings,
   Type,
   Image,
@@ -26,43 +25,67 @@ const toolCategories = [
   {
     name: "Text Tools",
     icon: Type,
-    href: "/text-formatter"
+    href: "/text-formatter",
+    description: "Format, count, and edit text"
   },
   {
     name: "Image Tools",
     icon: Image,
-    href: "/image-resizer"
+    href: "/image-resizer",
+    description: "Resize, compress, and convert images"
   },
   {
     name: "Developer Tools",
     icon: Code,
-    href: "/json-formatter"
+    href: "/pdf-viewer",
+    description: "PDF viewer, JSON, regex, and more"
   },
   {
     name: "Advanced Tools",
     icon: Wand2,
-    href: "/text-diff"
+    href: "/text-diff",
+    description: "Compare text, format code, create SVGs"
   }
 ]
 
 export function MobileNavigation() {
   const [searchOpen, setSearchOpen] = useState(false)
+  const [chatbotOpen, setChatbotOpen] = useState(false)
   const pathname = usePathname()
-  const { favoriteTools } = useUserPreferences()
+  
+  // Listen for chatbot state changes
+  useEffect(() => {
+    const handleChatbotOpen = () => setChatbotOpen(true)
+    const handleChatbotClose = () => setChatbotOpen(false)
+    
+    window.addEventListener('chatbot-opened', handleChatbotOpen)
+    window.addEventListener('chatbot-closed', handleChatbotClose)
+    
+    return () => {
+      window.removeEventListener('chatbot-opened', handleChatbotOpen)
+      window.removeEventListener('chatbot-closed', handleChatbotClose)
+    }
+  }, [])
   
   return (
     <>
       {/* Bottom Navigation Bar - Only visible on mobile */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t z-40 pb-safe-area">
-        <div className="flex items-center justify-around p-2">
-          <Link href="/" className="flex flex-col items-center p-2">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md border-t z-40 pb-safe-area shadow-lg">
+        <div className="flex items-center justify-around p-2 px-4">
+          <Link 
+            href="/" 
+            className={cn(
+              "flex flex-col items-center p-2 rounded-md transition-colors",
+              pathname === "/" ? "bg-primary/10" : "hover:bg-accent/50"
+            )}
+          >
             <Home className={cn(
               "h-5 w-5",
               pathname === "/" ? "text-primary" : "text-muted-foreground"
             )} />
             <span className={cn(
               "text-xs mt-1",
-              pathname === "/" ? "text-primary" : "text-muted-foreground"
+              pathname === "/" ? "text-primary font-medium" : "text-muted-foreground"
             )}>
               Home
             </span>
@@ -70,14 +93,26 @@ export function MobileNavigation() {
           
           <Sheet open={searchOpen} onOpenChange={setSearchOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" className="flex flex-col items-center p-2 h-auto">
-                <Search className="h-5 w-5 text-muted-foreground" />
-                <span className="text-xs mt-1 text-muted-foreground">
+              <Button 
+                variant="ghost" 
+                className={cn(
+                  "flex flex-col items-center p-2 h-auto rounded-md",
+                  searchOpen ? "bg-primary/10" : "hover:bg-accent/50"
+                )}
+              >
+                <Search className={cn(
+                  "h-5 w-5",
+                  searchOpen ? "text-primary" : "text-muted-foreground"
+                )} />
+                <span className={cn(
+                  "text-xs mt-1",
+                  searchOpen ? "text-primary font-medium" : "text-muted-foreground"
+                )}>
                   Tools
                 </span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="h-[80vh] rounded-t-xl">
+            <SheetContent side="bottom" className="h-[80vh] rounded-t-xl px-4 pb-8">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold">Tool Categories</h2>
                 <Button 
@@ -89,7 +124,7 @@ export function MobileNavigation() {
                 </Button>
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {toolCategories.map((category) => {
                   const Icon = category.icon
                   return (
@@ -97,64 +132,67 @@ export function MobileNavigation() {
                       key={category.name}
                       href={category.href}
                       onClick={() => setSearchOpen(false)}
-                      className="flex items-center gap-3 p-4 rounded-lg border hover:bg-accent"
+                      className="flex items-center gap-3 p-4 rounded-lg border hover:bg-accent active:bg-accent/80 transition-colors"
                     >
                       <div className="p-2 bg-primary/10 rounded-lg">
                         <Icon className="h-5 w-5 text-primary" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-medium">{category.name}</h3>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground ml-auto" />
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-medium">{category.name}</h3>
+                            <p className="text-xs text-muted-foreground mt-1">{category.description}</p>
+                          </div>
+                          <ChevronRight className="h-4 w-4 text-muted-foreground ml-2 mt-1 flex-shrink-0" />
+                        </div>
                       </div>
                     </Link>
                   )
                 })}
               </div>
               
-              {favoriteTools.length > 0 && (
-                <>
-                  <h3 className="text-sm font-medium text-muted-foreground mt-8 mb-4">
-                    Favorites
-                  </h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {favoriteTools.slice(0, 4).map((tool) => (
-                      <Link
-                        key={tool.href}
-                        href={tool.href}
-                        onClick={() => setSearchOpen(false)}
-                        className="flex items-center gap-2 p-3 rounded-md border"
-                      >
-                        <span className="text-primary" dangerouslySetInnerHTML={{ __html: tool.icon }} />
-                        <span className="text-sm">{tool.name}</span>
-                      </Link>
-                    ))}
-                  </div>
-                </>
-              )}
+              {/* We've removed the favorites section */}
             </SheetContent>
           </Sheet>
           
-          <Link href="/settings" className="flex flex-col items-center p-2">
-            <Star className={cn(
+          <Button 
+            variant="ghost" 
+            className={cn(
+              "flex flex-col items-center p-2 h-auto rounded-md transition-colors",
+              chatbotOpen ? "bg-primary/10" : "hover:bg-accent/50"
+            )}
+            onClick={() => {
+              // This will be handled by the Chatbot component
+              const chatbotToggleEvent = new CustomEvent('toggle-chatbot')
+              window.dispatchEvent(chatbotToggleEvent)
+            }}
+          >
+            <MessageCircle className={cn(
               "h-5 w-5",
-              pathname.includes("/favorites") ? "text-primary" : "text-muted-foreground"
+              chatbotOpen ? "text-primary" : "text-muted-foreground"
             )} />
             <span className={cn(
               "text-xs mt-1",
-              pathname.includes("/favorites") ? "text-primary" : "text-muted-foreground"
+              chatbotOpen ? "text-primary font-medium" : "text-muted-foreground"
             )}>
-              Favorites
+              Chat
             </span>
-          </Link>
+          </Button>
           
-          <Link href="/settings" className="flex flex-col items-center p-2">
+          <Link 
+            href="/settings" 
+            className={cn(
+              "flex flex-col items-center p-2 rounded-md transition-colors",
+              pathname === "/settings" ? "bg-primary/10" : "hover:bg-accent/50"
+            )}
+          >
             <Settings className={cn(
               "h-5 w-5",
               pathname === "/settings" ? "text-primary" : "text-muted-foreground"
             )} />
             <span className={cn(
               "text-xs mt-1",
-              pathname === "/settings" ? "text-primary" : "text-muted-foreground"
+              pathname === "/settings" ? "text-primary font-medium" : "text-muted-foreground"
             )}>
               Settings
             </span>
@@ -163,7 +201,7 @@ export function MobileNavigation() {
       </div>
       
       {/* Add padding to the bottom of the page on mobile to account for the navigation bar */}
-      <div className="md:hidden h-16" />
+      <div className="md:hidden h-20" />
     </>
   )
 }

@@ -32,3 +32,36 @@ export function downloadImage(canvas: HTMLCanvasElement, filename: string) {
   link.href = canvas.toDataURL()
   link.click()
 }
+
+// UI Density utility functions
+export const getDensityClasses = (density: 'compact' | 'comfortable' | 'spacious') => {
+  // Spacing classes for different UI densities
+  const spacingClasses = {
+    // Grid gap classes
+    grid: {
+      compact: "gap-3",
+      comfortable: "gap-6",
+      spacious: "gap-8"
+    },
+    // Padding classes
+    padding: {
+      compact: "p-2",
+      comfortable: "p-4",
+      spacious: "p-6"
+    },
+    // Margin classes
+    margin: {
+      compact: "space-y-2",
+      comfortable: "space-y-4",
+      spacious: "space-y-6"
+    },
+    // Card padding
+    card: {
+      compact: "p-3",
+      comfortable: "p-4",
+      spacious: "p-6"
+    }
+  }
+  
+  return spacingClasses
+}

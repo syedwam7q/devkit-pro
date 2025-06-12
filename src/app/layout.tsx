@@ -6,7 +6,7 @@ import { Sidebar } from '@/components/sidebar'
 import { Chatbot } from '@/components/chatbot'
 import { MobileNavigation } from '@/components/mobile-navigation'
 import { KeyboardShortcuts } from '@/components/keyboard-shortcuts'
-import { FavoritesHelper } from '@/components/favorites-helper'
+// We've removed the FavoritesHelper import
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,7 +18,9 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
+  maximumScale: 5,
+  minimumScale: 1,
+  userScalable: true,
   viewportFit: 'cover',
 }
 
@@ -39,14 +41,13 @@ export default function RootLayout({
           <div className="flex h-screen">
             <Sidebar />
             <main className="flex-1 overflow-y-auto md:ml-0">
-              <div className="container mx-auto p-4 md:p-6 pt-16 md:pt-6 pb-20 md:pb-6">
+              <div className="container mx-auto p-4 md:p-6 pt-16 md:pt-6 pb-24 md:pb-6">
                 {children}
               </div>
             </main>
             <Chatbot />
             <MobileNavigation />
             <KeyboardShortcuts />
-            <FavoritesHelper />
           </div>
         </ThemeProvider>
       </body>

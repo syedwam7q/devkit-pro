@@ -12,25 +12,19 @@ import { useUserPreferences } from "@/lib/store"
 import { 
   ArrowLeft, 
   Monitor, 
-  Smartphone, 
-  Laptop, 
   Moon, 
   Sun, 
-  Layout, 
-  Type, 
-  Star,
-  Trash2
+  Type
 } from "lucide-react"
 import { useTheme } from "next-themes"
+import { cn, getDensityClasses } from "@/lib/utils"
 
 export default function SettingsPage() {
   const { 
     uiDensity, 
     setUiDensity, 
     fontSize, 
-    setFontSize,
-    favoriteTools,
-    removeFavoriteTool
+    setFontSize
   } = useUserPreferences()
   
   const { theme, setTheme } = useTheme()
@@ -50,9 +44,8 @@ export default function SettingsPage() {
       </div>
       
       <Tabs defaultValue="appearance" value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="appearance">Appearance</TabsTrigger>
-          <TabsTrigger value="favorites">Favorites</TabsTrigger>
           <TabsTrigger value="about">About</TabsTrigger>
         </TabsList>
         
@@ -126,6 +119,30 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
+              <div className="mb-4">
+                <p className="text-sm text-muted-foreground mb-2">
+                  This setting affects spacing throughout the app. Changes are applied immediately.
+                </p>
+                <div className={cn(
+                  "p-3 border rounded-md mb-4 bg-card",
+                  uiDensity === 'compact' ? 'p-2' : uiDensity === 'spacious' ? 'p-5' : ''
+                )}>
+                  <div className={cn(
+                    "flex items-center",
+                    uiDensity === 'compact' ? 'gap-2' : uiDensity === 'spacious' ? 'gap-4' : 'gap-3'
+                  )}>
+                    <div className={cn(
+                      "w-8 h-8 rounded-md bg-primary/20",
+                      uiDensity === 'compact' ? 'w-6 h-6' : uiDensity === 'spacious' ? 'w-10 h-10' : ''
+                    )}></div>
+                    <div>
+                      <p className="font-medium">Preview</p>
+                      <p className="text-sm text-muted-foreground">Current density: {uiDensity}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
               <RadioGroup 
                 defaultValue={uiDensity} 
                 onValueChange={(value) => setUiDensity(value as 'compact' | 'comfortable' | 'spacious')}
@@ -253,56 +270,7 @@ export default function SettingsPage() {
           </Card>
         </TabsContent>
         
-        <TabsContent value="favorites" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Favorite Tools</CardTitle>
-              <CardDescription>
-                Manage your favorite tools for quick access
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {favoriteTools.length === 0 ? (
-                <div className="text-center py-8">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-4">
-                    <Star className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-medium mb-2">No favorite tools yet</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Add tools to your favorites from the home page
-                  </p>
-                  <Button asChild>
-                    <Link href="/">
-                      Browse Tools
-                    </Link>
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {favoriteTools.map((tool) => (
-                    <div key={tool.href} className="flex items-center justify-between p-3 border rounded-md">
-                      <div className="flex items-center gap-3">
-                        <div className="p-1.5 bg-primary/10 rounded-md">
-                          <span className="text-primary" dangerouslySetInnerHTML={{ __html: tool.icon }} />
-                        </div>
-                        <span>{tool.name}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button 
-                          variant="ghost" 
-                          size="icon"
-                          onClick={() => removeFavoriteTool(tool.href)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+        {/* Favorites tab has been removed */}
         
         <TabsContent value="about" className="mt-6">
           <Card>

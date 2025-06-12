@@ -29,9 +29,9 @@ import {
   Settings,
   ChevronRight,
   ChevronDown,
-  Star,
-  Clock,
-  Home
+  Home,
+  FileIcon,
+  ScanText
 } from "lucide-react"
 
 const tools = [
@@ -52,12 +52,15 @@ const tools = [
       { name: "Image Compressor", href: "/image-compressor", icon: Image },
       { name: "Color Picker", href: "/color-picker", icon: Palette },
       { name: "Image Converter", href: "/image-converter", icon: Image },
+      { name: "Image to Text", href: "/image-to-text", icon: ScanText },
     ]
   },
+  // Document Tools category removed - PDF Viewer moved to Developer Tools
   {
     category: "Developer Tools",
     icon: Code,
     items: [
+      { name: "PDF Viewer", href: "/pdf-viewer", icon: FileText },
       { name: "JSON Formatter", href: "/json-formatter", icon: Code },
       { name: "CSV/Excel Viewer", href: "/csv-excel-viewer", icon: FileSpreadsheet },
       { name: "API Tester", href: "/api-tester", icon: Globe },
@@ -98,35 +101,16 @@ export function Sidebar() {
     "Image Tools": true,
     "Developer Tools": true,
     "Advanced Tools": true,
-    "Quick Access": true
+    "Document Tools": true
   })
   const pathname = usePathname()
   const { 
     sidebarCollapsed, 
     setSidebarCollapsed,
-    favoriteTools,
-    recentTools,
-    addRecentTool,
     fontSize
   } = useUserPreferences()
 
-  // Track current tool for recent tools
-  useEffect(() => {
-    if (pathname === "/" || pathname === "/settings") return
-    
-    const currentTool = allTools.find(tool => tool.href === pathname)
-    if (currentTool) {
-      const toolIcon = currentTool.icon
-      // Get the SVG path for the icon
-      const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${getIconPath(toolIcon.name)}</svg>`
-      
-      addRecentTool({
-        name: currentTool.name,
-        href: currentTool.href,
-        icon: iconSvg
-      })
-    }
-  }, [pathname, addRecentTool])
+  // We've removed tracking of recent tools
 
   // Toggle section expansion
   const toggleSection = (section: string) => {
@@ -183,78 +167,7 @@ export function Sidebar() {
             </Link>
           </div>
 
-          {/* Quick Access Section */}
-          <div>
-            <div 
-              className="flex items-center justify-between mb-2 cursor-pointer"
-              onClick={() => toggleSection("Quick Access")}
-            >
-              <h3 className={cn("text-sm font-semibold text-muted-foreground uppercase tracking-wider", fontSizeClasses[fontSize])}>
-                Quick Access
-              </h3>
-              {expandedSections["Quick Access"] ? (
-                <ChevronDown className="h-4 w-4 text-muted-foreground" />
-              ) : (
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              )}
-            </div>
-            
-            {expandedSections["Quick Access"] && (
-              <div className="space-y-1 mb-2">
-                {/* Favorites Section */}
-                {favoriteTools.length > 0 && (
-                  <div className="pl-2 space-y-1 mb-2">
-                    <h4 className={cn("text-xs text-muted-foreground flex items-center gap-2", fontSizeClasses[fontSize])}>
-                      <Star className="h-3 w-3" /> Favorites
-                    </h4>
-                    <div className="space-y-1">
-                      {favoriteTools.slice(0, 5).map((tool) => (
-                        <Link
-                          key={tool.href}
-                          href={tool.href}
-                          onClick={() => setIsOpen(false)}
-                          className={cn(
-                            "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-accent hover:text-accent-foreground",
-                            pathname === tool.href ? "bg-accent text-accent-foreground" : "text-muted-foreground",
-                            fontSizeClasses[fontSize]
-                          )}
-                        >
-                          <span className="text-primary" dangerouslySetInnerHTML={{ __html: tool.icon }} />
-                          {tool.name}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {/* Recent Section */}
-                {recentTools.length > 0 && (
-                  <div className="pl-2 space-y-1">
-                    <h4 className={cn("text-xs text-muted-foreground flex items-center gap-2", fontSizeClasses[fontSize])}>
-                      <Clock className="h-3 w-3" /> Recent
-                    </h4>
-                    <div className="space-y-1">
-                      {recentTools.slice(0, 5).map((tool) => (
-                        <Link
-                          key={tool.href}
-                          href={tool.href}
-                          onClick={() => setIsOpen(false)}
-                          className={cn(
-                            "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-accent hover:text-accent-foreground",
-                            pathname === tool.href ? "bg-accent text-accent-foreground" : "text-muted-foreground",
-                            fontSizeClasses[fontSize]
-                          )}
-                        >
-                          <span className="text-primary" dangerouslySetInnerHTML={{ __html: tool.icon }} />
-                          {tool.name}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+
           
           {/* Tool Categories */}
           {tools.map((category) => (
@@ -339,20 +252,20 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile menu button */}
+      {/* Mobile menu button with improved styling */}
       <Button
         variant="ghost"
         size="icon"
-        className="fixed top-4 left-4 z-50 md:hidden"
+        className="fixed top-4 left-4 z-50 md:hidden bg-background/80 backdrop-blur-sm shadow-sm border"
         onClick={() => setIsOpen(true)}
       >
-        <Menu className="h-4 w-4" />
+        <Menu className="h-5 w-5" />
       </Button>
 
-      {/* Mobile overlay */}
+      {/* Mobile overlay with blur effect for better aesthetics */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -360,7 +273,7 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed left-0 top-0 z-50 h-full w-64 bg-background border-r transition-transform md:translate-x-0",
+          "fixed left-0 top-0 z-50 h-full w-[85%] max-w-[300px] bg-background border-r transition-transform duration-300 ease-in-out md:translate-x-0 md:w-64",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
