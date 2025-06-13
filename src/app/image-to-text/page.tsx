@@ -4,10 +4,9 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { ScanText, Copy, Loader2 } from "lucide-react"
+import { ScanText, Copy, Loader2, AlertCircle } from "lucide-react"
 import { ToolLayout } from "@/components/tool-layout"
 import { FileUpload } from "@/components/file-upload"
-import { createWorker } from 'tesseract.js'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 // Available languages for OCR
@@ -44,6 +43,7 @@ function ImageToText() {
   const [language, setLanguage] = useState<string>("eng")
   const [error, setError] = useState<string | null>(null)
   const [statusMessage, setStatusMessage] = useState<string>("")
+  const [worker, setWorker] = useState<any>(null)
 
   // Clean up image preview URL when component unmounts
   useEffect(() => {
@@ -51,8 +51,11 @@ function ImageToText() {
       if (imagePreview) {
         URL.revokeObjectURL(imagePreview)
       }
+      if (worker) {
+        worker.terminate().catch(console.warn)
+      }
     }
-  }, [imagePreview])
+  }, [imagePreview, worker])
 
   const handleFileChange = (file: File | null) => {
     setError(null)
@@ -91,78 +94,66 @@ function ImageToText() {
     setProgress(0)
     setError(null)
     setExtractedText("")
-    setStatusMessage("Initializing OCR worker...")
-    
-    let worker = null
-    
+    setStatusMessage("Initializing OCR...")
+
     try {
-      console.log('Starting OCR process...')
+      // Dynamic import to avoid SSR issues
+      const { createWorker } = await import('tesseract.js')
       
-      // Create worker with better configuration for static export
-      worker = await createWorker({
-        logger: (m) => {
-          console.log('Tesseract status:', m.status, 'progress:', m.progress)
-          if (m.status === 'recognizing text') {
-            setProgress(Math.floor(m.progress * 100))
-            setStatusMessage('Recognizing text...')
-          } else if (m.status === 'loading tesseract core') {
-            setProgress(10)
-            setStatusMessage('Loading OCR engine...')
-          } else if (m.status === 'initializing tesseract') {
-            setProgress(20)
-            setStatusMessage('Initializing OCR engine...')
-          } else if (m.status === 'loading language traineddata') {
-            setProgress(30)
-            setStatusMessage(`Loading ${language} language data...`)
-          } else if (m.status === 'initializing api') {
-            setProgress(40)
-            setStatusMessage('Preparing text recognition...')
-          }
+      setProgress(5)
+      setStatusMessage("Creating OCR worker...")
+      
+      // Create worker with minimal configuration
+      const newWorker = await createWorker()
+      setWorker(newWorker)
+      
+      setProgress(20)
+      setStatusMessage(`Loading ${language} language...`)
+      
+      // Load and initialize language
+      await newWorker.loadLanguage(language)
+      
+      setProgress(40)
+      setStatusMessage("Initializing OCR engine...")
+      
+      await newWorker.initialize(language)
+      
+      setProgress(60)
+      setStatusMessage("Processing image...")
+      
+      // Convert image to canvas to avoid cloning issues
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')!
+      const img = new Image()
+      
+      await new Promise((resolve, reject) => {
+        img.onload = () => {
+          canvas.width = img.width
+          canvas.height = img.height
+          ctx.drawImage(img, 0, 0)
+          resolve(null)
         }
+        img.onerror = reject
+        img.src = URL.createObjectURL(imageFile)
       })
       
-      console.log('Worker created successfully')
+      setProgress(70)
+      setStatusMessage("Recognizing text...")
       
-      // Load language with better error handling
-      setProgress(10)
-      console.log(`Loading language: ${language}`)
-      await worker.loadLanguage(language)
-      
-      setProgress(30)
-      console.log('Initializing worker...')
-      await worker.initialize(language)
-      
-      // Set parameters for better text recognition
-      await worker.setParameters({
-        tessedit_pageseg_mode: '1', // Automatic page segmentation with OSD
-        tessedit_char_whitelist: '', // Allow all characters
-      })
-      
-      setProgress(50)
-      console.log('Starting text recognition...')
-      
-      // Convert File to ImageData or use direct file processing
-      const result = await worker.recognize(imageFile)
-      
-      console.log('OCR result:', result)
-      
-      if (result && result.data && result.data.text) {
-        const extractedTextResult = result.data.text.trim()
-        if (extractedTextResult.length === 0) {
-          setError("No text was found in the image. Please try with a clearer image containing text.")
-        } else {
-          setExtractedText(extractedTextResult)
-          setStatusMessage("Text extraction completed!")
-          console.log('Text extracted successfully:', extractedTextResult.substring(0, 100) + '...')
-        }
-      } else {
-        throw new Error("No text data returned from OCR")
-      }
+      // Recognize text from canvas
+      const { data: { text } } = await newWorker.recognize(canvas)
       
       setProgress(100)
       
+      if (text.trim().length === 0) {
+        setError("No text was found in the image. Please try with a clearer image containing text.")
+      } else {
+        setExtractedText(text.trim())
+        setStatusMessage("Text extraction completed!")
+      }
+      
     } catch (err) {
-      console.error('OCR Error details:', err)
+      console.error('OCR Error:', err)
       let errorMessage = "Text extraction failed"
       
       if (err instanceof Error) {
@@ -175,16 +166,18 @@ function ImageToText() {
           errorMessage = "WebAssembly loading error: Your browser may not support this feature."
         } else if (errorMessage.includes('worker')) {
           errorMessage = "Worker initialization failed: Please refresh the page and try again."
+        } else if (errorMessage.includes('clone')) {
+          errorMessage = "Image processing error: Please try with a different image format."
         }
       }
       
       setError(errorMessage)
     } finally {
-      // Ensure worker is terminated
+      // Clean up worker
       if (worker) {
         try {
-          console.log('Terminating worker...')
           await worker.terminate()
+          setWorker(null)
         } catch (terminateErr) {
           console.warn('Error terminating worker:', terminateErr)
         }
@@ -250,6 +243,7 @@ function ImageToText() {
                 <Select
                   value={language}
                   onValueChange={setLanguage}
+                  disabled={isProcessing}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select language" />
@@ -296,7 +290,10 @@ function ImageToText() {
               )}
               
               {error && (
-                <p className="text-sm text-destructive">{error}</p>
+                <div className="flex items-start gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+                  <AlertCircle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
+                  <p className="text-sm text-destructive">{error}</p>
+                </div>
               )}
               
               <div className="mt-4 p-3 bg-muted/50 rounded-lg text-xs text-muted-foreground">
