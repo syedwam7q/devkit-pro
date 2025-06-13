@@ -38,10 +38,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex h-screen">
+          <div className="flex h-screen overflow-hidden">
             <Sidebar />
-            <main className="flex-1 overflow-y-auto md:ml-0">
-              <div className="container mx-auto p-4 md:p-6 pt-16 md:pt-6 pb-24 md:pb-6">
+            <main className="flex-1 overflow-y-auto overflow-x-hidden md:ml-0">
+              <div className="container mx-auto p-4 md:p-6 pt-16 md:pt-6 pb-24 md:pb-6 min-h-full">
                 {children}
               </div>
             </main>

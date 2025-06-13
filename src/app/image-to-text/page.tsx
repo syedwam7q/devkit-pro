@@ -81,37 +81,88 @@ function ImageToText() {
   }
 
   const processImage = async () => {
-    if (!imageFile) return
+    if (!imageFile) {
+      setError("Please select an image file first.")
+      return
+    }
     
     setIsProcessing(true)
     setProgress(0)
     setError(null)
     setExtractedText("")
     
+    let worker = null
+    
     try {
-      // Create worker with proper options
-      const worker = await createWorker({
-        logger: m => {
+      // Create worker with proper options and error handling
+      worker = await createWorker({
+        logger: (m) => {
+          console.log('Tesseract status:', m.status, 'progress:', m.progress)
           if (m.status === 'recognizing text') {
-            setProgress(m.progress * 100);
+            setProgress(Math.floor(m.progress * 100))
           }
         },
-      });
+        errorHandler: (err) => {
+          console.error('Tesseract worker error:', err)
+          setError(`Worker error: ${err.message}`)
+        }
+      })
       
-      // Load language and initialize
-      await worker.loadLanguage(language);
-      await worker.initialize(language);
+      if (!worker) {
+        throw new Error("Failed to create OCR worker")
+      }
       
-      // Recognize text
-      const { data } = await worker.recognize(imageFile);
-      setExtractedText(data.text);
+      // Load language and initialize with timeout
+      setProgress(10)
+      await Promise.race([
+        worker.loadLanguage(language),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error("Loading language timed out")), 30000)
+        )
+      ])
       
-      // Clean up
-      await worker.terminate();
+      setProgress(30)
+      await Promise.race([
+        worker.initialize(language),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error("Initialization timed out")), 30000)
+        )
+      ])
+      
+      setProgress(50)
+      
+      // Recognize text with timeout
+      const result = await Promise.race([
+        worker.recognize(imageFile),
+        new Promise<never>((_, reject) => 
+          setTimeout(() => reject(new Error("Text recognition timed out")), 60000)
+        )
+      ])
+      
+      if (result && 'data' in result && result.data && 'text' in result.data) {
+        const extractedTextResult = result.data.text.trim()
+        if (extractedTextResult.length === 0) {
+          setError("No text was found in the image. Please try with a clearer image containing text.")
+        } else {
+          setExtractedText(extractedTextResult)
+        }
+      } else {
+        throw new Error("No text data returned from OCR")
+      }
+      
     } catch (err) {
       console.error('OCR Error:', err)
-      setError("An error occurred during text extraction. Please try again with a different image.")
+      const errorMessage = err instanceof Error ? err.message : "Unknown error occurred"
+      setError(`Text extraction failed: ${errorMessage}. Please try with a different image or check your internet connection.`)
     } finally {
+      // Ensure worker is terminated
+      if (worker) {
+        try {
+          await worker.terminate()
+        } catch (terminateErr) {
+          console.warn('Error terminating worker:', terminateErr)
+        }
+      }
       setIsProcessing(false)
       setProgress(0)
     }

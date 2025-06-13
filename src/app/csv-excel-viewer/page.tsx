@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { FileSpreadsheet, Upload, Download, RotateCcw, Plus, Trash, Save } from "lucide-react"
 import { downloadFile } from "@/lib/utils"
 import Papa from 'papaparse'
-import * as XLSX from 'xlsx'
+import * as ExcelJS from 'exceljs'
 
 // Types for our data
 type CellData = string | number | null
@@ -70,26 +70,42 @@ export default function CsvExcelViewerPage() {
       reader.readAsText(file)
     } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
       setFileType("excel")
-      reader.onload = (e) => {
-        const data = new Uint8Array(e.target?.result as ArrayBuffer)
-        const workbook = XLSX.read(data, { type: 'array' })
-        
-        // Get first sheet
-        const firstSheetName = workbook.SheetNames[0]
-        const worksheet = workbook.Sheets[firstSheetName]
-        
-        // Convert to JSON
-        const jsonData = XLSX.utils.sheet_to_json<any[]>(worksheet, { header: 1 })
-        
-        if (jsonData.length > 0) {
-          // First row as headers
-          const headers = jsonData[0].map(String)
-          // Rest as data
-          const rows = jsonData.slice(1).filter(row => row.length > 0) as TableData
-          setHeaders(headers)
-          setData(rows)
-          setEditableHeaders([...headers])
-          setEditableData([...rows])
+      reader.onload = async (e) => {
+        try {
+          const data = e.target?.result as ArrayBuffer
+          const workbook = new ExcelJS.Workbook()
+          await workbook.xlsx.load(data)
+          
+          // Get first worksheet
+          const worksheet = workbook.worksheets[0]
+          if (!worksheet) {
+            throw new Error("No worksheets found in the Excel file")
+          }
+          
+          const jsonData: any[][] = []
+          
+          // Convert worksheet to array of arrays
+          worksheet.eachRow((row, rowNumber) => {
+            const rowData: any[] = []
+            row.eachCell((cell, colNumber) => {
+              rowData[colNumber - 1] = cell.value
+            })
+            jsonData.push(rowData)
+          })
+          
+          if (jsonData.length > 0) {
+            // First row as headers
+            const headers = jsonData[0].map(cell => String(cell || ''))
+            // Rest as data
+            const rows = jsonData.slice(1).filter(row => row.some(cell => cell !== null && cell !== undefined && cell !== '')) as TableData
+            setHeaders(headers)
+            setData(rows)
+            setEditableHeaders([...headers])
+            setEditableData([...rows])
+          }
+        } catch (error) {
+          console.error('Error reading Excel file:', error)
+          alert('Error reading Excel file. Please make sure it\'s a valid Excel file.')
         }
       }
       reader.readAsArrayBuffer(file)
@@ -145,14 +161,43 @@ export default function CsvExcelViewerPage() {
   }
 
   // Export as Excel
-  const exportExcel = () => {
-    const ws = XLSX.utils.aoa_to_sheet([
-      editableHeaders,
-      ...editableData
-    ])
-    const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
-    XLSX.writeFile(wb, `${fileName.replace(/\.(csv|xlsx|xls)$/, '')}_edited.xlsx`)
+  const exportExcel = async () => {
+    try {
+      const workbook = new ExcelJS.Workbook()
+      const worksheet = workbook.addWorksheet('Sheet1')
+      
+      // Add headers
+      worksheet.addRow(editableHeaders)
+      
+      // Add data rows
+      editableData.forEach(row => {
+        worksheet.addRow(row)
+      })
+      
+      // Style the header row
+      const headerRow = worksheet.getRow(1)
+      headerRow.font = { bold: true }
+      headerRow.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFE0E0E0' }
+      }
+      
+      // Generate buffer and download
+      const buffer = await workbook.xlsx.writeBuffer()
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `${fileName.replace(/\.(csv|xlsx|xls)$/, '')}_edited.xlsx`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error('Error exporting Excel file:', error)
+      alert('Error exporting Excel file. Please try again.')
+    }
   }
 
   // Effect to sync data when switching tabs
