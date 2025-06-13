@@ -43,6 +43,7 @@ function ImageToText() {
   const [progress, setProgress] = useState<number>(0)
   const [language, setLanguage] = useState<string>("eng")
   const [error, setError] = useState<string | null>(null)
+  const [statusMessage, setStatusMessage] = useState<string>("")
 
   // Clean up image preview URL when component unmounts
   useEffect(() => {
@@ -90,74 +91,99 @@ function ImageToText() {
     setProgress(0)
     setError(null)
     setExtractedText("")
+    setStatusMessage("Initializing OCR worker...")
     
     let worker = null
     
     try {
-      // Create worker with proper options and error handling
+      console.log('Starting OCR process...')
+      
+      // Create worker with better configuration for static export
       worker = await createWorker({
         logger: (m) => {
           console.log('Tesseract status:', m.status, 'progress:', m.progress)
           if (m.status === 'recognizing text') {
             setProgress(Math.floor(m.progress * 100))
+            setStatusMessage('Recognizing text...')
+          } else if (m.status === 'loading tesseract core') {
+            setProgress(10)
+            setStatusMessage('Loading OCR engine...')
+          } else if (m.status === 'initializing tesseract') {
+            setProgress(20)
+            setStatusMessage('Initializing OCR engine...')
+          } else if (m.status === 'loading language traineddata') {
+            setProgress(30)
+            setStatusMessage(`Loading ${language} language data...`)
+          } else if (m.status === 'initializing api') {
+            setProgress(40)
+            setStatusMessage('Preparing text recognition...')
           }
-        },
-        errorHandler: (err) => {
-          console.error('Tesseract worker error:', err)
-          setError(`Worker error: ${err.message}`)
         }
       })
       
-      if (!worker) {
-        throw new Error("Failed to create OCR worker")
-      }
+      console.log('Worker created successfully')
       
-      // Load language and initialize with timeout
+      // Load language with better error handling
       setProgress(10)
-      await Promise.race([
-        worker.loadLanguage(language),
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error("Loading language timed out")), 30000)
-        )
-      ])
+      console.log(`Loading language: ${language}`)
+      await worker.loadLanguage(language)
       
       setProgress(30)
-      await Promise.race([
-        worker.initialize(language),
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error("Initialization timed out")), 30000)
-        )
-      ])
+      console.log('Initializing worker...')
+      await worker.initialize(language)
+      
+      // Set parameters for better text recognition
+      await worker.setParameters({
+        tessedit_pageseg_mode: '1', // Automatic page segmentation with OSD
+        tessedit_char_whitelist: '', // Allow all characters
+      })
       
       setProgress(50)
+      console.log('Starting text recognition...')
       
-      // Recognize text with timeout
-      const result = await Promise.race([
-        worker.recognize(imageFile),
-        new Promise<never>((_, reject) => 
-          setTimeout(() => reject(new Error("Text recognition timed out")), 60000)
-        )
-      ])
+      // Convert File to ImageData or use direct file processing
+      const result = await worker.recognize(imageFile)
       
-      if (result && 'data' in result && result.data && 'text' in result.data) {
+      console.log('OCR result:', result)
+      
+      if (result && result.data && result.data.text) {
         const extractedTextResult = result.data.text.trim()
         if (extractedTextResult.length === 0) {
           setError("No text was found in the image. Please try with a clearer image containing text.")
         } else {
           setExtractedText(extractedTextResult)
+          setStatusMessage("Text extraction completed!")
+          console.log('Text extracted successfully:', extractedTextResult.substring(0, 100) + '...')
         }
       } else {
         throw new Error("No text data returned from OCR")
       }
       
+      setProgress(100)
+      
     } catch (err) {
-      console.error('OCR Error:', err)
-      const errorMessage = err instanceof Error ? err.message : "Unknown error occurred"
-      setError(`Text extraction failed: ${errorMessage}. Please try with a different image or check your internet connection.`)
+      console.error('OCR Error details:', err)
+      let errorMessage = "Text extraction failed"
+      
+      if (err instanceof Error) {
+        errorMessage = err.message
+        
+        // Provide specific error messages for common issues
+        if (errorMessage.includes('network') || errorMessage.includes('fetch')) {
+          errorMessage = "Network error: Please check your internet connection and try again."
+        } else if (errorMessage.includes('WASM')) {
+          errorMessage = "WebAssembly loading error: Your browser may not support this feature."
+        } else if (errorMessage.includes('worker')) {
+          errorMessage = "Worker initialization failed: Please refresh the page and try again."
+        }
+      }
+      
+      setError(errorMessage)
     } finally {
       // Ensure worker is terminated
       if (worker) {
         try {
+          console.log('Terminating worker...')
           await worker.terminate()
         } catch (terminateErr) {
           console.warn('Error terminating worker:', terminateErr)
@@ -165,6 +191,7 @@ function ImageToText() {
       }
       setIsProcessing(false)
       setProgress(0)
+      setStatusMessage("")
     }
   }
 
@@ -196,7 +223,7 @@ function ImageToText() {
             <CardHeader>
               <CardTitle>Upload Image</CardTitle>
               <CardDescription>
-                Upload an image containing text to extract
+                Upload an image containing text to extract. Best results with clear, high-contrast text.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -252,9 +279,36 @@ function ImageToText() {
                 )}
               </Button>
               
+              {isProcessing && (
+                <div className="space-y-2">
+                  <div className="w-full bg-secondary rounded-full h-2">
+                    <div 
+                      className="bg-primary h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                  {statusMessage && (
+                    <div className="text-sm text-muted-foreground text-center">
+                      {statusMessage}
+                    </div>
+                  )}
+                </div>
+              )}
+              
               {error && (
                 <p className="text-sm text-destructive">{error}</p>
               )}
+              
+              <div className="mt-4 p-3 bg-muted/50 rounded-lg text-xs text-muted-foreground">
+                <p className="font-medium mb-1">Tips for better results:</p>
+                <ul className="space-y-1">
+                  <li>• Use images with clear, readable text</li>
+                  <li>• Ensure good contrast between text and background</li>
+                  <li>• Avoid blurry or low-resolution images</li>
+                  <li>• Works best with printed text (not handwriting)</li>
+                  <li>• First run may take longer due to loading OCR engine</li>
+                </ul>
+              </div>
             </CardContent>
           </Card>
         </div>
