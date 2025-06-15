@@ -43,7 +43,7 @@ const toolCategories = [
     name: "Developer Tools",
     icon: Code,
     href: "/pdf-viewer",
-    description: "PDF viewer, JSON, regex, and more"
+    description: "PDF tools, JSON, regex, and more"
   },
   {
     name: "Advanced Tools",

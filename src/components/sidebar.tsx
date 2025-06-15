@@ -61,6 +61,7 @@ const tools = [
     icon: Code,
     items: [
       { name: "PDF Viewer", href: "/pdf-viewer", icon: FileText },
+      { name: "PDF Compressor", href: "/pdf-compressor", icon: FileText },
       { name: "JSON Formatter", href: "/json-formatter", icon: Code },
       { name: "CSV/Excel Viewer", href: "/csv-excel-viewer", icon: FileSpreadsheet },
       { name: "API Tester", href: "/api-tester", icon: Globe },

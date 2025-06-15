@@ -6,6 +6,14 @@ import { useUserPreferences } from '@/lib/store'
 
 // Map of tool paths to their display names and icons
 const toolInfo: Record<string, { name: string, icon: string }> = {
+  '/pdf-viewer': { 
+    name: 'PDF Viewer', 
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>' 
+  },
+  '/pdf-compressor': { 
+    name: 'PDF Compressor', 
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M7 13h4"></path><path d="M13 13h4"></path><path d="M7 17h2"></path><path d="M13 17h4"></path></svg>' 
+  },
   '/text-formatter': { 
     name: 'Text Formatter', 
     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"></path><path d="M9 20h6"></path><path d="M12 4v16"></path></svg>' 

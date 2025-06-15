@@ -14,6 +14,7 @@ export const toolRoutes: Record<string, string> = {
   
   // Developer Tools
   "PDF Viewer": "/pdf-viewer",
+  "PDF Compressor": "/pdf-compressor",
   "JSON Formatter": "/json-formatter",
   "CSV/Excel Viewer": "/csv-excel-viewer",
   "API Tester": "/api-tester",
@@ -45,7 +46,7 @@ export function getToolsByCategory(categoryTitle: string) {
   const categoryMap: Record<string, string[]> = {
     "Text Tools": ["Text Formatter", "Word Counter", "Markdown Editor"],
     "Image Tools": ["Image Resizer", "Image Compressor", "Color Picker", "Image Converter", "Image to Text"],
-    "Developer Tools": ["PDF Viewer", "JSON Formatter", "CSV/Excel Viewer", "API Tester", "Regex Tester", "Password Generator", "Base64 Encoder", "UUID Generator", "JWT Decoder", "URL Parser"],
+    "Developer Tools": ["PDF Viewer", "PDF Compressor", "JSON Formatter", "CSV/Excel Viewer", "API Tester", "Regex Tester", "Password Generator", "Base64 Encoder", "UUID Generator", "JWT Decoder", "URL Parser"],
     "Advanced Tools": ["Text Diff", "Code Formatter", "HTML/CSS Playground", "SVG Generator", "Meme Generator"],
   };
   
