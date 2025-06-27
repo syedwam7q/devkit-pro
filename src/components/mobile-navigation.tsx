@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -59,6 +60,7 @@ export function MobileNavigation() {
   const [searchQuery, setSearchQuery] = useState("")
   const [viewMode, setViewMode] = useState<"all" | "categories">("all")
   const pathname = usePathname()
+  const { theme } = useTheme()
   
   // Get all tools
   const allTools = getAllTools()
@@ -216,7 +218,7 @@ export function MobileNavigation() {
           <Button 
             variant="ghost" 
             className={cn(
-              "flex flex-col items-center p-2 h-auto rounded-md transition-colors",
+              "flex flex-col items-center p-2 h-auto rounded-md transition-colors relative",
               chatbotOpen ? "bg-primary/10" : "hover:bg-accent/50"
             )}
             onClick={() => {
@@ -225,15 +227,30 @@ export function MobileNavigation() {
               window.dispatchEvent(chatbotToggleEvent)
             }}
           >
-            <MessageCircle className={cn(
-              "h-5 w-5",
-              chatbotOpen ? "text-primary" : "text-muted-foreground"
-            )} />
+            <div className="relative">
+              <img 
+                src="/docs/logo/devkitlogo.png" 
+                alt="DevKit Pro Assistant" 
+                className="h-5 w-5 object-contain transition-all duration-300"
+                style={{
+                  filter: theme === 'light' 
+                    ? chatbotOpen 
+                      ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(200deg) brightness(104%) contrast(97%)'
+                      : 'brightness(0) saturate(100%) invert(60%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%)'
+                    : chatbotOpen
+                      ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(200deg) brightness(104%) contrast(97%)'
+                      : 'none'
+                }}
+              />
+              {chatbotOpen && (
+                <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full border border-background animate-pulse" />
+              )}
+            </div>
             <span className={cn(
               "text-xs mt-1",
               chatbotOpen ? "text-primary font-medium" : "text-muted-foreground"
             )}>
-              Chat
+              Assistant
             </span>
           </Button>
           
