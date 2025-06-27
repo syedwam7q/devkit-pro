@@ -132,8 +132,12 @@ export function Sidebar() {
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between p-4 border-b">
         <Link href="/" className="flex items-center gap-2">
-          <div className="p-1 bg-primary/10 rounded-md">
-            <Code className="h-5 w-5 text-primary" />
+          <div className="p-1 rounded-md">
+            <img 
+              src="/docs/logo/devkitproicon.png" 
+              alt="DevKit Pro Logo" 
+              className="h-12 w-12 object-contain"
+            />
           </div>
           <h1 className="text-xl font-bold">DevKit Pro</h1>
         </Link>
@@ -230,7 +234,17 @@ export function Sidebar() {
         
         <div className="text-xs text-muted-foreground">
           <div className="flex flex-col space-y-1">
-            <p>Developed by: Syed Wamiq</p>
+            <div className="flex items-center">
+              <span>Developed by:</span>
+              <a 
+                href="https://my-portfolio-eight-rust-75.vercel.app" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="ml-1 hover:text-foreground transition-colors hover:underline"
+              >
+                Syed Wamiq
+              </a>
+            </div>
             <div className="flex items-center gap-2">
               <a 
                 href="https://github.com/syedwam7q" 

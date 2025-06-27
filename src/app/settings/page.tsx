@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -276,12 +277,44 @@ export default function SettingsPage() {
         <TabsContent value="about" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>About DevKit Pro</CardTitle>
-              <CardDescription>
-                Information about this application
-              </CardDescription>
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0">
+                  <img 
+                    src="/docs/logo/devkitproicon.png" 
+                    alt="DevKit Pro Logo" 
+                    className="h-16 w-16 object-contain"
+                  />
+                </div>
+                <div>
+                  <CardTitle>About DevKit Pro</CardTitle>
+                  <CardDescription>
+                    Information about this application
+                  </CardDescription>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
+              {/* Elegant poster section */}
+              <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary/5 via-background to-primary/10 p-6">
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                  <div className="flex-shrink-0">
+                    <img 
+                      src="/docs/logo/devkitabouticon.png" 
+                      alt="DevKit Pro About Poster" 
+                      className="h-32 w-32 md:h-40 md:w-40 object-contain opacity-90 rounded-lg shadow-sm"
+                    />
+                  </div>
+                  <div className="flex-1 text-center md:text-left">
+                    <h3 className="text-lg font-semibold mb-2 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                      Your Complete Development Toolkit
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      DevKit Pro is a comprehensive collection of developer tools designed to streamline your workflow. 
+                      From text formatting to image processing, API testing to code formatting - everything you need in one place.
+                    </p>
+                  </div>
+                </div>
+              </div>
               <div>
                 <h3 className="font-medium mb-1">Version</h3>
                 <p className="text-sm text-muted-foreground">1.0.0</p>
@@ -291,7 +324,7 @@ export default function SettingsPage() {
                 <h3 className="font-medium mb-1">Developer</h3>
                 <p className="text-sm text-muted-foreground">
                   <a 
-                    href="https://github.com/syedwam7q" 
+                    href="https://my-portfolio-eight-rust-75.vercel.app" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-primary hover:underline"

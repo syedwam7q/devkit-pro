@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -205,6 +206,7 @@ const helpfulResponses = [
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
+  const { theme } = useTheme()
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
@@ -643,12 +645,28 @@ export function Chatbot() {
     <>
       {/* Chat button - hidden on mobile since we use the bottom nav */}
       <Button
-        className="fixed bottom-4 right-4 rounded-full h-12 w-12 p-0 shadow-lg md:flex hidden"
+        className="fixed bottom-4 right-4 rounded-full h-12 w-12 p-0 shadow-lg md:flex hidden bg-background/80 backdrop-blur-sm border-2 hover:bg-background/90 transition-all duration-300"
         onClick={toggleChat}
         title={`${isOpen ? 'Close' : 'Open'} chat (Ctrl+J)`}
         aria-label={`${isOpen ? 'Close' : 'Open'} chat`}
       >
-        {isOpen ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
+        {isOpen ? (
+          <X className="h-5 w-5" />
+        ) : (
+          <div className="relative">
+            <img 
+              src="/docs/logo/devkitlogo.png" 
+              alt="DevKit Pro Assistant" 
+              className="h-6 w-6 object-contain transition-all duration-300"
+              style={{
+                filter: theme === 'light' 
+                  ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(200deg) brightness(104%) contrast(97%)'
+                  : 'none'
+              }}
+            />
+            <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-background animate-pulse" />
+          </div>
+        )}
       </Button>
 
       {/* Chat window - optimized for mobile */}

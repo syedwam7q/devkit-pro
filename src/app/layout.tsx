@@ -13,6 +13,11 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'DevKit Pro - Your Ultimate Developer Toolbox',
   description: 'A comprehensive toolkit for developers, designers, and content creators with essential utilities.',
+  icons: {
+    icon: '/docs/logo/devkitproappicon.png',
+    shortcut: '/docs/logo/devkitproappicon.png',
+    apple: '/docs/logo/devkitproappicon.png',
+  },
 }
 
 export const viewport: Viewport = {

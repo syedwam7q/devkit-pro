@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import { createPortal } from "react-dom"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useTheme } from "next-themes"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 // We've removed Tabs imports
@@ -271,6 +272,7 @@ export function CustomizableDashboard({ categories }: { categories: any[] }) {
   const { 
     uiDensity
   } = useUserPreferences()
+  const { theme } = useTheme()
   
   // We've removed DND sensors and handlers
   
@@ -285,24 +287,42 @@ export function CustomizableDashboard({ categories }: { categories: any[] }) {
   }
   
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       {/* Hero section with animated gradient background */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-background to-primary/5 p-6 md:p-10">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-background to-primary/5 p-8 md:p-12">
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         
-        <div className="relative z-10 max-w-3xl mx-auto text-center space-y-4">
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70 pb-1">
+        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
+          {/* Clean logo placement */}
+          <div className="flex justify-center">
+            <div className="relative group">
+              <div className="relative transition-all duration-300 group-hover:scale-105">
+                <img 
+                  src="/docs/logo/devkitlogo.png" 
+                  alt="DevKit Pro Logo" 
+                  className="h-40 w-40 md:h-48 md:w-48 lg:h-56 lg:w-56 object-contain opacity-90 group-hover:opacity-100 transition-all duration-300"
+                  style={{
+                    filter: theme === 'light' 
+                      ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(200deg) brightness(104%) contrast(97%)'
+                      : 'none'
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+          
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-700 dark:from-blue-400 dark:via-cyan-300 dark:to-blue-500 pb-1 drop-shadow-sm">
             Welcome to DevKit Pro
           </h1>
-          <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto leading-relaxed">
             Your ultimate toolbox for development, design, and content creation. 
-            Fast, free, and works entirely in your browser.
+            <span className="text-blue-600 dark:text-blue-400 font-medium"> Fast, free, and works entirely in your browser.</span>
           </p>
           
-          <div className="pt-2">
-            <Button asChild size="lg" className="rounded-full px-6 bg-primary/90 hover:bg-primary">
+          <div className="pt-4">
+            <Button asChild size="lg" className="rounded-full px-8 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 border-0 transition-all duration-300">
               <Link href="/settings" className="flex items-center justify-center">
-                <Settings className="h-4 w-4 mr-2" />
+                <Settings className="h-5 w-5 mr-2" />
                 Customize Your Experience
               </Link>
             </Button>
@@ -311,15 +331,21 @@ export function CustomizableDashboard({ categories }: { categories: any[] }) {
       </div>
       
       {/* Tools section */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-semibold text-center md:text-left">
-          Powerful Tools
-          <span className="ml-2 inline-block px-2 py-1 bg-primary/10 text-primary rounded-md text-sm font-normal">
-            {categories.reduce((acc, cat) => acc + cat.tools.length, 0)} tools
-          </span>
-        </h2>
+      <div className="space-y-8">
+        <div className="text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-2">
+            Powerful Tools
+          </h2>
+          <p className="text-muted-foreground text-lg mb-4">
+            Choose from our comprehensive collection of development tools
+          </p>
+          <div className="inline-flex items-center px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium">
+            <span className="w-2 h-2 bg-primary rounded-full mr-2 animate-pulse"></span>
+            {categories.reduce((acc, cat) => acc + cat.tools.length, 0)} tools available
+          </div>
+        </div>
         
-        <div className={`grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 ${densityClasses.grid[uiDensity]}`}>
+        <div className={`grid grid-cols-1 lg:grid-cols-2 gap-6 ${densityClasses.grid[uiDensity]}`}>
           {categories.map((category) => {
             const IconComponent = getIconComponent(category.icon)
             
@@ -338,53 +364,58 @@ export function CustomizableDashboard({ categories }: { categories: any[] }) {
       </div>
       
       {/* Features section with cards */}
-      <div className="space-y-4 pt-4">
-        <h2 className="text-2xl font-semibold text-center md:text-left">Why DevKit Pro?</h2>
+      <div className="space-y-8">
+        <div className="text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-2">Why DevKit Pro?</h2>
+          <p className="text-muted-foreground text-lg">
+            Built with developers in mind, designed for everyone
+          </p>
+        </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="border-2 border-primary/10 hover:border-primary/20 transition-colors">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-2">
-                  <Settings className="h-4 w-4 text-primary" />
-                </div>
-                100% Free
-              </CardTitle>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="border-2 border-primary/10 hover:border-primary/20 transition-all duration-300 hover:shadow-lg group">
+            <CardHeader className="pb-4 text-center">
+              <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300">
+                <svg className="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                </svg>
+              </div>
+              <CardTitle className="text-xl">100% Free</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">
+            <CardContent className="text-center">
+              <p className="text-muted-foreground">
                 All tools are completely free to use. No hidden fees, no subscriptions, no limits.
               </p>
             </CardContent>
           </Card>
           
-          <Card className="border-2 border-primary/10 hover:border-primary/20 transition-colors">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-2">
-                  <Settings className="h-4 w-4 text-primary" />
-                </div>
-                Privacy First
-              </CardTitle>
+          <Card className="border-2 border-primary/10 hover:border-primary/20 transition-all duration-300 hover:shadow-lg group">
+            <CardHeader className="pb-4 text-center">
+              <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300">
+                <svg className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <CardTitle className="text-xl">Privacy First</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">
+            <CardContent className="text-center">
+              <p className="text-muted-foreground">
                 Everything runs in your browser. Your data never leaves your device.
               </p>
             </CardContent>
           </Card>
           
-          <Card className="border-2 border-primary/10 hover:border-primary/20 transition-colors">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-2">
-                  <Settings className="h-4 w-4 text-primary" />
-                </div>
-                Always Updated
-              </CardTitle>
+          <Card className="border-2 border-primary/10 hover:border-primary/20 transition-all duration-300 hover:shadow-lg group">
+            <CardHeader className="pb-4 text-center">
+              <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300">
+                <svg className="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </div>
+              <CardTitle className="text-xl">Always Updated</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm">
+            <CardContent className="text-center">
+              <p className="text-muted-foreground">
                 Regular updates with new tools and improvements based on user feedback.
               </p>
             </CardContent>

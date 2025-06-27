@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevKit Pro | The Ultimate Developer Toolkit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00f0ff',
+                        secondary: '#ff00e6',
+                        dark: '#0a0a1a',
+                        darker: '#050510',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        gradient: {
+                            '0%, 100%': { 'background-position': '0% 50%' },
+                            '50%': { 'background-position': '100% 50%' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+        
+        body {
+            background-color: #050510;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #00f0ff, #ff00e6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(-45deg, #0a0a1a, #1a0a2a, #0a1a2a, #1a2a0a);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        .card-glass {
+            background: rgba(15, 15, 35, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+        }
+        
+        .glow {
+            filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.7));
+        }
+        
+        .glow-purple {
+            filter: drop-shadow(0 0 8px rgba(255, 0, 230, 0.7));
+        }
+        
+        .terminal {
+            background: rgba(10, 10, 20, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .terminal-header {
+            background: rgba(15, 15, 25, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .terminal-body {
+            min-height: 200px;
+        }
+        
+        .command-line::before {
+            content: '> ';
+            color: #00f0ff;
+        }
+        
+        .typewriter {
+            border-right: 2px solid #00f0ff;
+            animation: blink 0.75s step-end infinite;
+        }
+        
+        @keyframes blink {
+            from, to { border-color: transparent }
+            50% { border-color: #00f0ff; }
+        }
+        
+        .particle {
+            position: absolute;
+            background: linear-gradient(90deg, #00f0ff, #ff00e6);
+            border-radius: 50%;
+            filter: blur(1px);
+            z-index: -1;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 240, 255, 0.1), 0 10px 10px -5px rgba(255, 0, 230, 0.1);
+        }
+        
+        .nav-link::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00f0ff, #ff00e6);
+            transition: width 0.3s;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="gradient-bg">
+    <!-- Floating particles background -->
+    <div id="particles"></div>
+    
+    <!-- Navigation -->
+    <nav class="container mx-auto px-6 py-4">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center glow">
+                    <i class="fas fa-code text-white text-lg"></i>
+                </div>
+                <span class="text-xl font-bold gradient-text">DevKit Pro</span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#features" class="nav-link text-white hover:text-primary transition">Features</a>
+                <a href="#tools" class="nav-link text-white hover:text-primary transition">Tools</a>
+                <a href="#pricing" class="nav-link text-white hover:text-primary transition">Pricing</a>
+                <a href="#contact" class="nav-link text-white hover:text-primary transition">Contact</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="#" class="text-white hover:text-primary transition">Login</a>
+                <a href="#" class="px-4 py-2 bg-gradient-to-r from-primary to-secondary rounded-full text-dark font-medium hover:opacity-90 transition">Sign Up</a>
+            </div>
+            <button class="md:hidden text-white">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="container mx-auto px-6 py-20 md:py-32 relative">
+        <div class="flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-16 md:mb-0">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                    <span class="gradient-text">Supercharge</span> Your Development Workflow
+                </h1>
+                <p class="text-lg md:text-xl text-gray-300 mb-8 max-w-lg">
+                    The ultimate toolkit for modern developers. Streamline your workflow with powerful tools, integrations, and automation.
+                </p>
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#" class="px-8 py-3 bg-gradient-to-r from-primary to-secondary rounded-full text-dark font-bold text-center hover:opacity-90 transition">
+                        Get Started Free
+                    </a>
+                    <a href="#" class="px-8 py-3 border border-primary rounded-full text-primary font-bold text-center hover:bg-primary hover:bg-opacity-10 transition flex items-center justify-center">
+                        <i class="fas fa-play-circle mr-2"></i> Watch Demo
+                    </a>
+                </div>
+                <div class="mt-8 flex items-center space-x-4">
+                    <div class="flex -space-x-2">
+                        <img src="https://randomuser.me/api/portraits/women/12.jpg" class="w-10 h-10 rounded-full border-2 border-dark" alt="User">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-10 h-10 rounded-full border-2 border-dark" alt="User">
+                        <img src="https://randomuser.me/api/portraits/women/45.jpg" class="w-10 h-10 rounded-full border-2 border-dark" alt="User">
+                    </div>
+                    <p class="text-gray-400">
+                        Trusted by <span class="text-white font-medium">10,000+</span> developers worldwide
+                    </p>
+                </div>
+            </div>
+            <div class="md:w-1/2 relative">
+                <div class="terminal card-glass glow max-w-lg mx-auto">
+                    <div class="terminal-header px-4 py-3 flex items-center">
+                        <div class="flex space-x-2 mr-4">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <div class="text-sm text-gray-400">terminal</div>
+                    </div>
+                    <div class="terminal-body p-4 text-gray-300 font-mono text-sm">
+                        <div class="mb-2">$ <span class="command-line">devkit init</span></div>
+                        <div class="mb-2 text-primary">Initializing new project...</div>
+                        <div class="mb-2">✔ Installed dependencies</div>
+                        <div class="mb-2">✔ Configured environment</div>
+                        <div class="mb-2">✔ Generated boilerplate</div>
+                        <div class="mb-2 text-green-400">Project ready in 2.4s</div>
+                        <div class="mb-2">$ <span class="command-line">devkit deploy --prod</span></div>
+                        <div class="mb-2 text-primary">Deploying to production...</div>
+                        <div class="mb-2">✔ Build completed</div>
+                        <div class="mb-2">✔ Tests passed (42/42)</div>
+                        <div class="mb-2">✔ Deployment successful</div>
+                        <div class="text-green-400">Your app is live at <span class="text-white">https://your-app.devkit.pro</span></div>
+                        <div class="mt-4">$ <span class="command-line typewriter">_</span></div>
+                    </div>
+                </div>
+                <div class="absolute -top-10 -left-10 w-32 h-32 rounded-full bg-primary opacity-20 blur-3xl -z-10"></div>
+                <div class="absolute -bottom-10 -right-10 w-32 h-32 rounded-full bg-secondary opacity-20 blur-3xl -z-10"></div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" class="container mx-auto px-6 py-20">
+        <div class="text-center mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                <span class="gradient-text">Powerful Features</span> for Developers
+            </h2>
+            <p class="text-gray-400 max-w-2xl mx-auto">
+                Everything you need to build, test, and deploy your applications faster than ever before.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="card-glass p-8 rounded-xl hover:border-primary border border-transparent transition-all duration-300">
+                <div class="w-14 h-14 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center mb-6 glow">
+                    <i class="fas fa-bolt text-white text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Lightning Fast</h3>
+                <p class="text-gray-400">
+                    Optimized workflows that save you hours of development time with intelligent automation and shortcuts.
+                </p>
+            </div>
+            
+            <div class="card-glass p-8 rounded-xl hover:border-primary border border-transparent transition-all duration-300">
+                <div class="w-14 h-14 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center mb-6 glow">
+                    <i class="fas fa-shield-alt text-white text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Secure by Design</h3>
+                <p class="text-gray-400">
+                    Built-in security features and automatic updates keep your projects safe from vulnerabilities.
+                </p>
+            </div>
+            
+            <div class="card-glass p-8 rounded-xl hover:border-primary border border-transparent transition-all duration-300">
+                <div class="w-14 h-14 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center mb-6 glow">
+                    <i class="fas fa-plug text-white text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Seamless Integrations</h3>
+                <p class="text-gray-400">
+                    Connect with your favorite tools and services with our extensive integration library.
+                </p>
+            </div>
+            
+            <div class="card-glass p-8 rounded-xl hover:border-primary border border-transparent transition-all duration-300">
+                <div class="w-14 h-14 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center mb-6 glow">
+                    <i class="fas fa-cloud text-white text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Cloud Native</h3>
+                <p class="text-gray-400">
+                    Deploy anywhere with our cloud-agnostic architecture. Scale effortlessly as your needs grow.
+                </p>
+            </div>
+            
+            <div class="card-glass p-8 rounded-xl hover:border-primary border border-transparent transition-all duration-300">
+                <div class="w-14 h-14 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center mb-6 glow">
+                    <i class="fas fa-code-branch text-white text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Team Collaboration</h3>
+                <p class="text-gray-400">
+                    Real-time collaboration features make working with your team smoother than ever.
+                </p>
+            </div>
+            
+            <div class="card-glass p-8 rounded-xl hover:border-primary border border-transparent transition-all duration-300">
+                <div class="w-14 h-14 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center mb-6 glow">
+                    <i class="fas fa-chart-line text-white text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Advanced Analytics</h3>
+                <p class="text-gray-400">
+                    Get insights into your development process with detailed metrics and performance tracking.
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Tools Showcase -->
+    <section id="tools" class="container mx-auto px-6 py-20">
+        <div class="text-center mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                <span class="gradient-text">Developer Tools</span> You'll Love
+            </h2>
+            <p class="text-gray-400 max-w-2xl mx-auto">
+                A curated collection of powerful tools to enhance every aspect of your development workflow.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Tool Card 1 -->
+            <div class="tool-card card-glass p-6 rounded-xl border border-transparent hover:border-primary transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center mr-4 glow">
+                        <i class="fas fa-terminal text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Smart Terminal</h3>
+                </div>
+                <p class="text-gray-400 mb-4">
+                    AI-powered terminal with command prediction, auto-completion, and error detection.
+                </p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 bg-dark rounded-full text-xs text-primary">CLI</span>
+                    <span class="px-3 py-1 bg-dark rounded-full text-xs text-secondary">AI</span>
+                    <span class="px-3 py-1 bg-dark rounded-full text-xs text-green-400">Productivity</span>
+                </div>
+            </div>
+            
+            <!-- Tool Card 2 -->
+            <div class="tool-card card-glass p-6 rounded-xl border border-transparent hover:border-primary transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center mr-4 glow">
+                        <i class="fas fa-code text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Code Generator</h3>
+                </div>
+                <p class="text-gray-400 mb-4">
+                    Generate boilerplate code, components, and entire modules with a few clicks.
+                </p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 bg-dark rounded-full text-xs text-primary">Templates</span>
+                    <span class="px-3 py-1 bg-dark rounded-full text-xs text-secondary">Scaffolding</span>
+                </div>
+            </div>
+            
+            <!-- Tool Card 3 -->
+            <div class="tool-card card-glass p-6 rounded-xl border border-transparent hover:border-primary transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center mr-4 glow">
+                        <i class="fas fa-bug text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Debug Assistant</h3>
+                </div>
+                <p class="text-gray-400 mb-4">
+                    Intelligent debugging that analyzes your code and suggests fixes in real-time.
+                </p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 bg-dark rounded-full text-xs text-primary">Debugging</span>
+                    <span class="px-3 py-1 bg-dark rounded-full text-xs text-secondary">AI</span>
+                </div>
+            </div>
+            
+            <!-- Tool Card 4 -->
+            <div class="tool-card card-glass p-6 rounded-xl border border-transparent hover:border-primary transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center mr-4 glow">
+                        <i class="fas fa-server text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">API Simulator</h3>
+                </div>
+                <p class="text-gray-400 mb-4">
+                    Mock and test APIs with realistic responses before the backend is ready.
+                </p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 bg-dark rounded-full text-xs text-primary">Testing</span>
+                    <span class="px-3 py-1 bg-dark rounded-full text-xs text-secondary">API</span>
+                </div>
+            </div>
+            
+            <!-- Tool Card 5 -->
+            <div class="tool-card card-glass p-6 rounded-xl border border-transparent hover:border-primary transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center mr-4 glow">
+                        <i class="fas fa-database text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Database Manager</h3>
+                </div>
+                <p class="text-gray-400 mb-4">
+                    Visual interface for managing databases with schema design and query building.
+                </p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 bg-dark rounded-full text-xs text-primary">Database</span>
+                    <span class="px-3 py-1 bg-dark rounded-full text-xs text-secondary">SQL</span>
+                </div>
+            </div>
+            
+            <!-- Tool Card 6 -->
+            <div class="tool-card card-glass p-6 rounded-xl border border-transparent hover:border-primary transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center mr-4 glow">
+                        <i class="fas fa-rocket text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Deployment Wizard</h3>
+                </div>
+                <p class="text-gray-400 mb-4">
+                    One-click deployments to multiple platforms with automated CI/CD pipelines.
+                </p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 bg-dark rounded-full text-xs text-primary">DevOps</span>
+                    <span class="px-3 py-1 bg-dark rounded-full text-xs text-secondary">CI/CD</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pricing Section -->
+    <section id="pricing" class="container mx-auto px-6 py-20">
+        <div class="text-center mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                <span class="gradient-text">Simple Pricing</span> for Everyone
+            </h2>
+            <p class="text-gray-400 max-w-2xl mx-auto">
+                Choose the plan that fits your needs. No hidden fees, cancel anytime.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <!-- Free Plan -->
+            <div class="card-glass p-8 rounded-xl border border-gray-800 hover:border-primary transition-all duration-300">
+                <h3 class="text-xl font-bold mb-2">Starter</h3>
+                <p class="text-gray-400 mb-6">Perfect for individual developers</p>
+                <div class="mb-6">
+                    <span class="text-4xl font-bold">$0</span>
+                    <span class="text-gray-400">/month</span>
+                </div>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-primary mr-2"></i>
+                        <span>Basic tools access</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-primary mr-2"></i>
+                        <span>5 projects</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-primary mr-2"></i>
+                        <span>Community support</span>
+                    </li>
+                    <li class="flex items-center text-gray-500">
+                        <i class="fas fa-times mr-2"></i>
+                        <span>Premium tools</span>
+                    </li>
+                    <li class="flex items-center text-gray-500">
+                        <i class="fas fa-times mr-2"></i>
+                        <span>Team collaboration</span>
+                    </li>
+                </ul>
+                <a href="#" class="block w-full py-3 px-6 text-center border border-primary rounded-full text-primary hover:bg-primary hover:bg-opacity-10 transition">
+                    Get Started
+                </a>
+            </div>
+            
+            <!-- Pro Plan (Featured) -->
+            <div class="card-glass p-8 rounded-xl border-2 border-primary relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-primary text-dark text-xs font-bold px-3 py-1 rounded-bl-lg">
+                    POPULAR
+                </div>
+                <h3 class="text-xl font-bold mb-2">Pro</h3>
+                <p class="text-gray-400 mb-6">For professional developers and small teams</p>
+                <div class="mb-6">
+                    <span class="text-4xl font-bold">$15</span>
+                    <span class="text-gray-400">/month</span>
+                </div>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-primary mr-2"></i>
+                        <span>All basic features</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-primary mr-2"></i>
+                        <span>Unlimited projects</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-primary mr-2"></i>
+                        <span>Premium tools access</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-primary mr-2"></i>
+                        <span>Team collaboration (up to 5)</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-primary mr-2"></i>
+                        <span>Priority support</span>
+                    </li>
+                </ul>
+                <a href="#" class="block w-full py-3 px-6 text-center bg-gradient-to-r from-primary to-secondary rounded-full text-dark font-bold hover:opacity-90 transition">
+                    Upgrade Now
+                </a>
+            </div>
+            
+            <!-- Enterprise Plan -->
+            <div class="card-glass p-8 rounded-xl border border-gray-800 hover:border-primary transition-all duration-300">
+                <h3 class="text-xl font-bold mb-2">Enterprise</h3>
+                <p class="text-gray-400 mb-6">For large teams and organizations</p>
+                <div class="mb-6">
+                    <span class="text-4xl font-bold">$50</span>
+                    <span class="text-gray-400">/month</span>
+                </div>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-primary mr-2"></i>
+                        <span>All pro features</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-primary mr-2"></i>
+                        <span>Unlimited team members</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-primary mr-2"></i>
+                        <span>Advanced security</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-primary mr-2"></i>
+                        <span>Dedicated account manager</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-primary mr-2"></i>
+                        <span>24/7 premium support</span>
+                    </li>
+                </ul>
+                <a href="#" class="block w-full py-3 px-6 text-center border border-primary rounded-full text-primary hover:bg-primary hover:bg-opacity-10 transition">
+                    Contact Sales
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials -->
+    <section class="container mx-auto px-6 py-20">
+        <div class="text-center mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                What <span class="gradient-text">Developers Say</span>
+            </h2>
+            <p class="text-gray-400 max-w-2xl mx-auto">
+                Join thousands of developers who have transformed their workflow with DevKit Pro.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Testimonial 1 -->
+            <div class="card-glass p-6 rounded-xl">
+                <div class="flex items-center mb-4">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-12 h-12 rounded-full mr-4" alt="Sarah Johnson">
+                    <div>
+                        <h4 class="font-bold">Sarah Johnson</h4>
+                        <p class="text-gray-400 text-sm">Senior Developer @TechCorp</p>
+                    </div>
+                </div>
+                <p class="text-gray-300 mb-4">
+                    "DevKit Pro has completely transformed my development workflow. The time I save on boilerplate code and debugging is incredible."
+                </p>
+                <div class="flex text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+            </div>
+            
+            <!-- Testimonial 2 -->
+            <div class="card-glass p-6 rounded-xl">
+                <div class="flex items-center mb-4">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-12 h-12 rounded-full mr-4" alt="Michael Chen">
+                    <div>
+                        <h4 class="font-bold">Michael Chen</h4>
+                        <p class="text-gray-400 text-sm">CTO @StartupX</p>
+                    </div>
+                </div>
+                <p class="text-gray-300 mb-4">
+                    "Our team's productivity increased by 40% after switching to DevKit Pro. The collaboration features are game-changing."
+                </p>
+                <div class="flex text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+            </div>
+            
+            <!-- Testimonial 3 -->
+            <div class="card-glass p-6 rounded-xl">
+                <div class="flex items-center mb-4">
+                    <img src="https://randomuser.me/api/portraits/women/68.jpg" class="w-12 h-12 rounded-full mr-4" alt="Emma Rodriguez">
+                    <div>
+                        <h4 class="font-bold">Emma Rodriguez</h4>
+                        <p class="text-gray-400 text-sm">Freelance Developer</p>
+                    </div>
+                </div>
+                <p class="text-gray-300 mb-4">
+                    "As a freelancer, DevKit Pro helps me deliver projects faster without compromising quality. The code generator alone is worth the price."
+                </p>
+                <div class="flex text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="container mx-auto px-6 py-20">
+        <div class="card-glass p-8 md:p-12 rounded-xl relative overflow-hidden">
+            <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-primary opacity-10 blur-3xl -z-10"></div>
+            <div class="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-secondary opacity-10 blur-3xl -z-10"></div>
+            
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                        Ready to <span class="gradient-text">Supercharge</span> Your Development?
+                    </h2>
+                    <p class="text-gray-400 max-w-lg">
+                        Join thousands of developers who are building better software faster with DevKit Pro.
+                    </p>
+                </div>
+                <div class="md:w-1/2 flex justify-center md:justify-end">
+                    <a href="#" class="px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-full text-dark font-bold text-lg hover:opacity-90 transition flex items-center">
+                        Get Started Now
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer id="contact" class="bg-darker py-16">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center glow">
+                            <i class="fas fa-code text-white text-lg"></i>
+                        </div>
+                        <span class="text-xl font-bold gradient-text">DevKit Pro</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        The ultimate toolkit for modern developers.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-primary transition">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition">
+                            <i class="fab fa-github text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition">
+                            <i class="fab fa-discord text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Product</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition">Features</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition">Pricing</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition">Documentation</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition">Roadmap</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition">About</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Subscribe</h4>
+                    <p class="text-gray-400 mb-4">
+                        Get the latest updates and news.
+                    </p>
+                    <div class="flex">
+                        <input type="email" placeholder="Your email" class="px-4 py-2 bg-dark border border-gray-700 rounded-l-lg focus:outline-none focus:border-primary w-full">
+                        <button class="px-4 py-2 bg-gradient-to-r from-primary to-secondary text-dark font-medium rounded-r-lg hover:opacity-90 transition">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 mb-4 md:mb-0">
+                    © 2023 DevKit Pro. All rights reserved.
+                </p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-primary transition">Privacy</a>
+                    <a href="#" class="text-gray-500 hover:text-primary transition">Terms</a>
+                    <a href="#" class="text-gray-500 hover:text-primary transition">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 2px and 6px
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random opacity
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                
+                // Random animation duration and delay
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 5;
+                particle.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
+                
+                container.appendChild(particle);
+            }
+        }
+        
+        // Typewriter effect for terminal
+        function typeWriter() {
+            const elements = document.querySelectorAll('.typewriter');
+            
+            if (elements.length > 0) {
+                const phrases = [
+                    'devkit deploy --prod',
+                    'devkit test --coverage',
+                    'devkit generate component',
+                    'devkit db migrate',
+                    'devkit help'
+                ];
+                let currentPhrase = 0;
+                let charIndex = 0;
+                let isDeleting = false;
+                let typingSpeed = 100;
+                
+                function type() {
+                    const element = elements[0];
+                    const fullPhrase = phrases[currentPhrase];
+                    
+                    if (isDeleting) {
+                        element.textContent = fullPhrase.substring(0, charIndex - 1);
+                        charIndex--;
+                        typingSpeed = 50;
+                    } else {
+                        element.textContent = fullPhrase.substring(0, charIndex + 1);
+                        charIndex++;
+                        typingSpeed = 100;
+                    }
+                    
+                    if (!isDeleting && charIndex === fullPhrase.length) {
+                        isDeleting = true;
+                        typingSpeed = 1500; // Pause at end of phrase
+                    } else if (isDeleting && charIndex === 0) {
+                        isDeleting = false;
+                        currentPhrase = (currentPhrase + 1) % phrases.length;
+                        typingSpeed = 500; // Pause before typing next phrase
+                    }
+                    
+                    setTimeout(type, typingSpeed);
+                }
+                
+                type();
+            }
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            typeWriter();
+            
+            // Add scroll animation for elements
+            const animateOnScroll = function() {
+                const elements = document.querySelectorAll('.card-glass, .tool-card');
+                
+                elements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.2;
+                    
+                    if (elementPosition < screenPosition) {
+                        element.style.opacity = '1';
+                        element.style.transform = 'translateY(0)';
+                    }
+                });
+            };
+            
+            // Set initial state for animated elements
+            const animatedElements = document.querySelectorAll('.card-glass, .tool-card');
+            animatedElements.forEach(element => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            });
+            
+            window.addEventListener('scroll', animateOnScroll);
+            animateOnScroll(); // Trigger once on load
+        });
+    </script>
+</body>
+</html>
