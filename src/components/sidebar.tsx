@@ -275,6 +275,16 @@ export function Sidebar() {
           Settings
         </Link>
         
+        {/* Subtle feedback option */}
+        <div className="mb-3 text-xs">
+          <a 
+            href="mailto:wamiqworkspace@gmail.com?subject=DevKit Pro Feedback&body=Hi! I'd like to share some feedback about DevKit Pro:%0D%0A%0D%0A"
+            className="text-muted-foreground hover:text-foreground transition-colors hover:underline"
+          >
+            Send Feedback
+          </a>
+        </div>
+        
         <div className="text-xs text-muted-foreground space-y-1 max-w-full">
           <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-1">
             <span className="whitespace-nowrap">Developed by:</span>

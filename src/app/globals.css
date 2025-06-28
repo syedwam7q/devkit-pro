@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 98%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -12,16 +12,16 @@
     --popover-foreground: 222.2 84% 4.9%;
     --primary: 221.2 83.2% 53.3%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 0 0% 98%;
+    --secondary: 210 40% 96%;
     --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 0 0% 98%;
+    --muted: 210 40% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 0 0% 98%;
+    --accent: 210 40% 96%;
     --accent-foreground: 222.2 84% 4.9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 89%;
-    --input: 0 0% 96%;
+    --border: 214.3 31.8% 91%;
+    --input: 0 0% 100%;
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
   }
@@ -86,52 +86,514 @@
     overflow-x: hidden;
   }
   
-  /* Force white background for light theme */
-  html:not(.dark):not(.blackwhite) body,
-  html:not(.dark):not(.blackwhite) main,
-  html:not(.dark):not(.blackwhite) .bg-background,
-  html:not(.dark):not(.blackwhite) .bg-card,
-  html:not(.dark):not(.blackwhite) .bg-popover,
-  html:not(.dark):not(.blackwhite) .bg-secondary,
-  html:not(.dark):not(.blackwhite) .bg-muted,
-  html:not(.dark):not(.blackwhite) .bg-accent {
-    background-color: #ffffff !important;
-  }
-  
-  /* Ensure light theme cards and containers are white */
-  html:not(.dark):not(.blackwhite) [data-theme="light"] *,
-  html:not(.dark):not(.blackwhite) * {
-    --tw-bg-opacity: 1;
-  }
-  
-  html:not(.dark):not(.blackwhite) .bg-card {
-    background-color: rgb(255 255 255 / var(--tw-bg-opacity)) !important;
-  }
-  
-  html:not(.dark):not(.blackwhite) .bg-background {
-    background-color: rgb(255 255 255 / var(--tw-bg-opacity)) !important;
-  }
-  
-  /* Light theme specific overrides */
-  .light,
+  /* Light theme enhancements */
   html:not(.dark):not(.blackwhite) {
-    --background: 0 0% 100% !important;
-    --card: 0 0% 100% !important;
-    --popover: 0 0% 100% !important;
-    --secondary: 0 0% 100% !important;
-    --muted: 0 0% 100% !important;
-    --accent: 0 0% 100% !important;
+    /* Subtle background gradient for depth */
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(210 40% 99%) 100%);
   }
   
-  /* Ensure sidebar and all containers are white in light theme */
-  html:not(.dark):not(.blackwhite) aside,
-  html:not(.dark):not(.blackwhite) nav,
-  html:not(.dark):not(.blackwhite) div,
-  html:not(.dark):not(.blackwhite) section,
-  html:not(.dark):not(.blackwhite) article,
-  html:not(.dark):not(.blackwhite) header,
-  html:not(.dark):not(.blackwhite) footer {
-    background-color: #ffffff;
+  /* Enhanced card styling for light theme */
+  html:not(.dark):not(.blackwhite) .bg-card {
+    background-color: hsl(var(--card));
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+  
+  /* Improved sidebar styling for light theme */
+  html:not(.dark):not(.blackwhite) aside {
+    background-color: hsl(var(--card));
+    border-color: hsl(var(--border));
+    box-shadow: 2px 0 8px 0 rgba(0, 0, 0, 0.04);
+  }
+  
+  /* Better button styling for light theme */
+  html:not(.dark):not(.blackwhite) button:not(.variant-ghost):not([data-variant="ghost"]) {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+  
+  html:not(.dark):not(.blackwhite) button:hover:not(.variant-ghost):not([data-variant="ghost"]) {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* Enhanced input styling for light theme */
+  html:not(.dark):not(.blackwhite) input,
+  html:not(.dark):not(.blackwhite) textarea,
+  html:not(.dark):not(.blackwhite) select {
+    background-color: hsl(var(--input));
+    border-color: hsl(var(--border));
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+  
+  html:not(.dark):not(.blackwhite) input:focus,
+  html:not(.dark):not(.blackwhite) textarea:focus,
+  html:not(.dark):not(.blackwhite) select:focus {
+    box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+  }
+  
+  /* Enhanced text contrast for light theme */
+  html:not(.dark):not(.blackwhite) .text-muted-foreground {
+    color: hsl(215.4 16.3% 44%);
+  }
+  
+  /* Improved hover states for light theme */
+  html:not(.dark):not(.blackwhite) .hover\:bg-accent:hover {
+    background-color: hsl(210 40% 94%);
+  }
+  
+  html:not(.dark):not(.blackwhite) .hover\:bg-muted:hover {
+    background-color: hsl(210 40% 94%);
+  }
+  
+  /* Better border styling for light theme */
+  html:not(.dark):not(.blackwhite) .border {
+    border-color: hsl(214.3 31.8% 89%);
+  }
+  
+  /* Enhanced dropdown and popover styling */
+  html:not(.dark):not(.blackwhite) [role="menu"],
+  html:not(.dark):not(.blackwhite) .bg-popover {
+    background-color: hsl(var(--popover));
+    border-color: hsl(var(--border));
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Improved navigation styling for light theme */
+  html:not(.dark):not(.blackwhite) nav a:hover {
+    background-color: hsl(210 40% 94%);
+  }
+  
+  /* Better code block styling for light theme */
+  html:not(.dark):not(.blackwhite) code,
+  html:not(.dark):not(.blackwhite) pre {
+    background-color: hsl(210 40% 96%);
+    border-color: hsl(var(--border));
+  }
+  
+  /* Enhanced visual hierarchy for light theme */
+  html:not(.dark):not(.blackwhite) h1,
+  html:not(.dark):not(.blackwhite) h2,
+  html:not(.dark):not(.blackwhite) h3 {
+    color: hsl(222.2 84% 4.9%);
+    font-weight: 600;
+  }
+  
+  /* Improved link styling for light theme */
+  html:not(.dark):not(.blackwhite) a {
+    color: hsl(var(--primary));
+    transition: color 0.2s ease-in-out;
+  }
+  
+  html:not(.dark):not(.blackwhite) a:hover {
+    color: hsl(var(--primary) / 0.8);
+  }
+  
+  /* Better table styling for light theme */
+  html:not(.dark):not(.blackwhite) table {
+    border-color: hsl(var(--border));
+  }
+  
+  html:not(.dark):not(.blackwhite) th {
+    background-color: hsl(210 40% 97%);
+    color: hsl(222.2 84% 4.9%);
+    font-weight: 600;
+  }
+  
+  html:not(.dark):not(.blackwhite) tr:nth-child(even) {
+    background-color: hsl(210 40% 98%);
+  }
+  
+  /* Enhanced form styling for light theme */
+  html:not(.dark):not(.blackwhite) label {
+    color: hsl(222.2 84% 4.9%);
+    font-weight: 500;
+  }
+  
+  /* Better alert/notification styling for light theme */
+  html:not(.dark):not(.blackwhite) .bg-destructive\/10 {
+    background-color: hsl(0 84.2% 60.2% / 0.1);
+  }
+  
+  html:not(.dark):not(.blackwhite) .bg-green-50 {
+    background-color: hsl(120 60% 97%);
+  }
+  
+  html:not(.dark):not(.blackwhite) .bg-blue-50 {
+    background-color: hsl(210 100% 97%);
+  }
+  
+  html:not(.dark):not(.blackwhite) .bg-yellow-50 {
+    background-color: hsl(54 100% 97%);
+  }
+  
+  /* Enhanced selection styling for light theme */
+  html:not(.dark):not(.blackwhite) ::selection {
+    background-color: hsl(var(--primary) / 0.2);
+    color: hsl(222.2 84% 4.9%);
+  }
+  
+  /* Better focus ring for light theme */
+  html:not(.dark):not(.blackwhite) *:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+  
+  /* Improved scrollbar for light theme */
+  html:not(.dark):not(.blackwhite) ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  html:not(.dark):not(.blackwhite) ::-webkit-scrollbar-track {
+    background: hsl(210 40% 96%);
+  }
+  
+  html:not(.dark):not(.blackwhite) ::-webkit-scrollbar-thumb {
+    background: hsl(215.4 16.3% 56%);
+    border-radius: 4px;
+  }
+  
+  html:not(.dark):not(.blackwhite) ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
+  }
+  
+  /* Better tooltip styling for light theme */
+  html:not(.dark):not(.blackwhite) [role="tooltip"] {
+    background-color: hsl(222.2 84% 4.9%);
+    color: hsl(210 40% 98%);
+    border: none;
+  }
+  
+  /* Enhanced badge styling for light theme */
+  html:not(.dark):not(.blackwhite) .bg-secondary\/50 {
+    background-color: hsl(210 40% 94%);
+    border: 1px solid hsl(214.3 31.8% 89%);
+  }
+  
+  /* Improved dialog and modal styling for light theme */
+  html:not(.dark):not(.blackwhite) [role="dialog"],
+  html:not(.dark):not(.blackwhite) .bg-background\/95 {
+    background-color: hsl(var(--background) / 0.98);
+    backdrop-filter: blur(8px);
+  }
+  
+  /* Better separator styling for light theme */
+  html:not(.dark):not(.blackwhite) .border-t,
+  html:not(.dark):not(.blackwhite) .border-b {
+    border-color: hsl(214.3 31.8% 91%);
+  }
+  
+  /* Enhanced loading states for light theme */
+  html:not(.dark):not(.blackwhite) .animate-pulse {
+    animation: pulse-light 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse-light {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+  
+  /* Better skeleton loading for light theme */
+  html:not(.dark):not(.blackwhite) .bg-muted\/50 {
+    background-color: hsl(210 40% 94%);
+  }
+  
+  /* Improved gradient backgrounds for light theme */
+  html:not(.dark):not(.blackwhite) .bg-gradient-to-br {
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(210 40% 97%) 50%, hsl(var(--background)) 100%);
+  }
+  
+  /* Enhanced shadow system for light theme */
+  html:not(.dark):not(.blackwhite) .shadow-sm {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+  
+  html:not(.dark):not(.blackwhite) .shadow {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+  
+  html:not(.dark):not(.blackwhite) .shadow-md {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  html:not(.dark):not(.blackwhite) .shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  html:not(.dark):not(.blackwhite) .shadow-xl {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  
+  html:not(.dark):not(.blackwhite) .shadow-2xl {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Enhanced chatbot styling for light theme */
+  html:not(.dark):not(.blackwhite) .fixed.bottom-4.right-4 {
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+  }
+  
+  /* Better floating action button styling for light theme */
+  html:not(.dark):not(.blackwhite) .floating-button {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  html:not(.dark):not(.blackwhite) .floating-button:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+  
+  /* Improved text selection for light theme */
+  html:not(.dark):not(.blackwhite) *::selection {
+    background-color: hsl(var(--primary) / 0.15);
+    color: hsl(222.2 84% 4.9%);
+  }
+  
+  /* Better focus states for accessibility in light theme */
+  html:not(.dark):not(.blackwhite) *:focus {
+    outline-color: hsl(var(--ring));
+  }
+  
+  /* Enhanced card hover effects for light theme */
+  html:not(.dark):not(.blackwhite) .hover\:shadow-lg:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px);
+    transition: all 0.2s ease-in-out;
+  }
+  
+  /* Better progress bar styling for light theme */
+  html:not(.dark):not(.blackwhite) .bg-primary\/20 {
+    background-color: hsl(var(--primary) / 0.15);
+  }
+  
+  /* Enhanced notification styling for light theme */
+  html:not(.dark):not(.blackwhite) .bg-green-100 {
+    background-color: hsl(120 60% 95%);
+    border-color: hsl(120 60% 85%);
+  }
+  
+  html:not(.dark):not(.blackwhite) .bg-red-100 {
+    background-color: hsl(0 60% 95%);
+    border-color: hsl(0 60% 85%);
+  }
+  
+  html:not(.dark):not(.blackwhite) .bg-blue-100 {
+    background-color: hsl(210 100% 95%);
+    border-color: hsl(210 100% 85%);
+  }
+  
+  html:not(.dark):not(.blackwhite) .bg-yellow-100 {
+    background-color: hsl(54 100% 95%);
+    border-color: hsl(54 100% 85%);
+  }
+  
+  /* Enhanced tool category styling for light theme */
+  html:not(.dark):not(.blackwhite) .bg-blue-500\/10 {
+    background-color: hsl(217 91% 95%);
+    color: hsl(217 91% 35%);
+  }
+  
+  html:not(.dark):not(.blackwhite) .bg-green-500\/10 {
+    background-color: hsl(142 76% 95%);
+    color: hsl(142 76% 35%);
+  }
+  
+  html:not(.dark):not(.blackwhite) .bg-purple-500\/10 {
+    background-color: hsl(262 83% 95%);
+    color: hsl(262 83% 35%);
+  }
+  
+  html:not(.dark):not(.blackwhite) .bg-orange-500\/10 {
+    background-color: hsl(25 95% 95%);
+    color: hsl(25 95% 35%);
+  }
+  
+  /* Better badge styling for light theme */
+  html:not(.dark):not(.blackwhite) .bg-primary\/10 {
+    background-color: hsl(var(--primary) / 0.08);
+    color: hsl(var(--primary));
+    border: 1px solid hsl(var(--primary) / 0.2);
+  }
+  
+  /* Enhanced error and success states for light theme */
+  html:not(.dark):not(.blackwhite) .text-red-600 {
+    color: hsl(0 84% 45%);
+  }
+  
+  html:not(.dark):not(.blackwhite) .text-green-600 {
+    color: hsl(142 76% 35%);
+  }
+  
+  html:not(.dark):not(.blackwhite) .text-blue-600 {
+    color: hsl(217 91% 35%);
+  }
+  
+  /* Better code syntax highlighting for light theme */
+  html:not(.dark):not(.blackwhite) .hljs {
+    background-color: hsl(210 40% 97%) !important;
+    color: hsl(222.2 84% 4.9%) !important;
+  }
+  
+  /* Enhanced file upload area styling for light theme */
+  html:not(.dark):not(.blackwhite) .border-dashed {
+    border-color: hsl(214.3 31.8% 85%);
+    background-color: hsl(210 40% 98%);
+  }
+  
+  html:not(.dark):not(.blackwhite) .border-dashed:hover {
+    border-color: hsl(var(--primary) / 0.5);
+    background-color: hsl(var(--primary) / 0.02);
+  }
+  
+  /* Better loading spinner for light theme */
+  html:not(.dark):not(.blackwhite) .animate-spin {
+    color: hsl(var(--primary));
+  }
+  
+  /* Enhanced breadcrumb styling for light theme */
+  html:not(.dark):not(.blackwhite) .text-muted-foreground\/60 {
+    color: hsl(215.4 16.3% 50%);
+  }
+  
+  /* Better contrast for small text in light theme */
+  html:not(.dark):not(.blackwhite) .text-xs {
+    color: hsl(215.4 16.3% 40%);
+  }
+  
+  html:not(.dark):not(.blackwhite) .text-sm {
+    color: hsl(215.4 16.3% 35%);
+  }
+  
+  /* Enhanced placeholder text for light theme */
+  html:not(.dark):not(.blackwhite) ::placeholder {
+    color: hsl(215.4 16.3% 55%);
+  }
+  
+  /* Better disabled state styling for light theme */
+  html:not(.dark):not(.blackwhite) :disabled {
+    opacity: 0.6;
+    color: hsl(215.4 16.3% 60%);
+  }
+  
+  /* Enhanced active states for light theme */
+  html:not(.dark):not(.blackwhite) .active,
+  html:not(.dark):not(.blackwhite) [aria-selected="true"] {
+    background-color: hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+    border-color: hsl(var(--primary) / 0.3);
+  }
+  
+  /* Better keyboard navigation indicators for light theme */
+  html:not(.dark):not(.blackwhite) *:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring));
+  }
+  
+  /* Enhanced menu item styling for light theme */
+  html:not(.dark):not(.blackwhite) [role="menuitem"]:hover,
+  html:not(.dark):not(.blackwhite) [role="option"]:hover {
+    background-color: hsl(210 40% 94%);
+    color: hsl(222.2 84% 4.9%);
+  }
+  
+  /* Better divider styling for light theme */
+  html:not(.dark):not(.blackwhite) hr,
+  html:not(.dark):not(.blackwhite) .divide-y > * + * {
+    border-color: hsl(214.3 31.8% 89%);
+  }
+  
+  /* Enhanced toggle switch styling for light theme */
+  html:not(.dark):not(.blackwhite) [role="switch"] {
+    background-color: hsl(210 40% 92%);
+    border-color: hsl(214.3 31.8% 85%);
+  }
+  
+  html:not(.dark):not(.blackwhite) [role="switch"][aria-checked="true"] {
+    background-color: hsl(var(--primary));
+    border-color: hsl(var(--primary));
+  }
+  
+  /* Fix button text color in light theme */
+  html:not(.dark):not(.blackwhite) .bg-gradient-to-r.from-blue-600.to-cyan-600,
+  html:not(.dark):not(.blackwhite) button.bg-gradient-to-r {
+    color: white !important;
+  }
+  
+  html:not(.dark):not(.blackwhite) .bg-gradient-to-r.from-blue-600.to-cyan-600 *,
+  html:not(.dark):not(.blackwhite) button.bg-gradient-to-r * {
+    color: white !important;
+  }
+  
+  /* Ensure primary buttons have white text in light theme */
+  html:not(.dark):not(.blackwhite) .bg-primary,
+  html:not(.dark):not(.blackwhite) button[class*="bg-primary"],
+  html:not(.dark):not(.blackwhite) button.bg-primary {
+    color: white !important;
+  }
+  
+  html:not(.dark):not(.blackwhite) .bg-primary *,
+  html:not(.dark):not(.blackwhite) button[class*="bg-primary"] *,
+  html:not(.dark):not(.blackwhite) button.bg-primary * {
+    color: white !important;
+  }
+  
+  /* Specific fix for "Choose Tool" button text */
+  html:not(.dark):not(.blackwhite) button.bg-primary span,
+  html:not(.dark):not(.blackwhite) .bg-primary span {
+    color: white !important;
+  }
+  
+  /* Fix for "Customize Your Experience" button */
+  html:not(.dark):not(.blackwhite) .bg-gradient-to-r span,
+  html:not(.dark):not(.blackwhite) .bg-gradient-to-r svg {
+    color: white !important;
+  }
+  
+  /* Chatbot icon color in light theme */
+  html:not(.dark):not(.blackwhite) .fixed.bottom-6.right-6 img[alt="DevKit Pro Assistant"] {
+    filter: brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(200deg) brightness(104%) contrast(97%);
+  }
+  
+  html:not(.dark):not(.blackwhite) .fixed.bottom-6.right-6:hover img[alt="DevKit Pro Assistant"] {
+    filter: brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(200deg) brightness(120%) contrast(110%);
+  }
+  
+  /* Professional separator styling */
+  .separator-gradient {
+    background: linear-gradient(90deg, transparent 0%, hsl(var(--border)) 20%, hsl(var(--border)) 80%, transparent 100%);
+    height: 1px;
+  }
+  
+  html:not(.dark):not(.blackwhite) .separator-gradient {
+    background: linear-gradient(90deg, transparent 0%, hsl(214.3 31.8% 85%) 20%, hsl(214.3 31.8% 85%) 80%, transparent 100%);
+  }
+  
+  .blackwhite .separator-gradient {
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 20%, rgba(255, 255, 255, 0.2) 80%, transparent 100%);
+  }
+  
+  /* Feedback button enhancements */
+  .feedback-button {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .feedback-button:hover {
+    transform: translateY(-1px);
+  }
+  
+  html:not(.dark):not(.blackwhite) .feedback-button:hover {
+    background-color: hsl(var(--primary) / 0.05);
+    color: hsl(var(--primary));
+  }
+  
+  .blackwhite .feedback-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
   }
   
   /* Improve scrolling on mobile */

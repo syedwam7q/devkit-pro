@@ -364,6 +364,38 @@ export function CustomizableDashboard({ categories }: { categories: any[] }) {
         </div>
       </div>
       
+      {/* Professional separator */}
+      <div className="relative flex items-center justify-center py-8">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full separator-gradient"></div>
+        </div>
+        <div className={`relative flex items-center justify-center px-6 ${
+          theme === 'blackwhite' 
+            ? 'bg-black' 
+            : 'bg-background'
+        }`}>
+          <div className={`flex items-center gap-3 ${
+            theme === 'blackwhite' 
+              ? 'text-white/60 font-mono text-sm' 
+              : 'text-muted-foreground'
+          }`}>
+            {theme === 'blackwhite' ? (
+              <>
+                <span className="text-white/40">{'{'}</span>
+                <span className="animate-pulse">●</span>
+                <span className="text-white/40">{'}'}</span>
+              </>
+            ) : (
+              <>
+                <div className="w-2 h-2 rounded-full bg-primary/40 animate-pulse"></div>
+                <div className="w-1 h-1 rounded-full bg-primary/60"></div>
+                <div className="w-2 h-2 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+      
       {/* Tools section */}
       <div className="space-y-8">
         <div className="text-center">
@@ -454,6 +486,65 @@ export function CustomizableDashboard({ categories }: { categories: any[] }) {
               </p>
             </CardContent>
           </Card>
+        </div>
+        
+        {/* Subtle feedback section */}
+        <div className="mt-16 text-center">
+          <div className="max-w-2xl mx-auto">
+            <div className={`relative overflow-hidden rounded-2xl p-8 ${
+              theme === 'blackwhite' 
+                ? 'bg-white/5 border border-white/10' 
+                : 'bg-gradient-to-br from-primary/5 via-background to-primary/10 border border-primary/10'
+            }`}>
+              <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+              
+              <div className="relative z-10 space-y-4">
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 ${
+                  theme === 'blackwhite' 
+                    ? 'bg-white/10' 
+                    : 'bg-primary/10'
+                }`}>
+                  <svg className={`h-6 w-6 ${
+                    theme === 'blackwhite' 
+                      ? 'text-white/70' 
+                      : 'text-primary'
+                  }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                </div>
+                
+                <h3 className={`text-xl font-semibold ${
+                  theme === 'blackwhite' 
+                    ? 'text-white font-mono' 
+                    : 'text-foreground'
+                }`}>
+                  {theme === 'blackwhite' ? '> feedback.send()' : 'Help Us Improve'}
+                </h3>
+                
+                <p className={`text-sm ${
+                  theme === 'blackwhite' 
+                    ? 'text-white/70 font-mono' 
+                    : 'text-muted-foreground'
+                }`}>
+                  {theme === 'blackwhite' 
+                    ? '// Your feedback drives our development' 
+                    : 'Your feedback helps us build better tools for developers like you'
+                  }
+                </p>
+                
+                <a 
+                  href="mailto:wamiqworkspace@gmail.com?subject=DevKit Pro Feedback&body=Hi! I'd like to share some feedback about DevKit Pro:%0D%0A%0D%0A"
+                  className={`inline-block mt-4 text-sm transition-all duration-300 hover:underline ${
+                    theme === 'blackwhite'
+                      ? 'text-white/80 hover:text-white font-mono'
+                      : 'text-primary hover:text-primary/80'
+                  }`}
+                >
+                  {theme === 'blackwhite' ? '> send_feedback()' : 'Send Feedback'}
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
