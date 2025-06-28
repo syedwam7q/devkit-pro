@@ -30,7 +30,8 @@ import {
   Grid3X3,
   List,
   ExternalLink,
-  ArrowRight
+  ArrowRight,
+  LayoutGrid
 } from "lucide-react"
 
 const toolCategories = [
@@ -236,7 +237,7 @@ const allTools = toolCategories.flatMap(category =>
 
 export default function ToolsPage() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [viewMode, setViewMode] = useState<"categories" | "list">("categories")
+  const [viewMode, setViewMode] = useState<"categories" | "list" | "icons">("categories")
 
   // Filter tools based on search query
   const filteredTools = searchQuery 
@@ -295,6 +296,15 @@ export default function ToolsPage() {
             >
               <Grid3X3 className="h-4 w-4" />
               Categories
+            </Button>
+            <Button
+              variant={viewMode === "icons" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setViewMode("icons")}
+              className="flex items-center gap-2"
+            >
+              <LayoutGrid className="h-4 w-4" />
+              Icons
             </Button>
             <Button
               variant={viewMode === "list" ? "default" : "outline"}
@@ -391,6 +401,63 @@ export default function ToolsPage() {
                   })}
                 </div>
               </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Icon View */}
+      {viewMode === "icons" && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+          {filteredTools.map((tool) => {
+            const ToolIcon = tool.icon
+            const isExternal = (tool as any).external
+            
+            const IconItem = (
+              <div className="group flex flex-col items-center p-4 rounded-lg hover:bg-accent/50 transition-all duration-200 cursor-pointer">
+                <div className="relative mb-3">
+                  <div className="p-3 bg-muted rounded-xl group-hover:bg-primary/10 transition-colors group-hover:scale-110 transform duration-200">
+                    <ToolIcon className="h-6 w-6 group-hover:text-primary transition-colors" />
+                  </div>
+                  {isExternal && (
+                    <div className="absolute -top-1 -right-1 p-1 bg-background rounded-full border shadow-sm">
+                      <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                    </div>
+                  )}
+                </div>
+                <div className="text-center">
+                  <h3 className="text-sm font-medium group-hover:text-primary transition-colors line-clamp-2 leading-tight">
+                    {tool.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
+                    {tool.category}
+                  </p>
+                </div>
+              </div>
+            )
+
+            if (isExternal) {
+              return (
+                <a
+                  key={tool.href}
+                  href={tool.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={`${tool.name} - ${tool.description}`}
+                >
+                  {IconItem}
+                </a>
+              )
+            }
+
+            return (
+              <Link 
+                key={tool.href} 
+                href={tool.href}
+                title={`${tool.name} - ${tool.description}`}
+              >
+                {IconItem}
+              </Link>
             )
           })}
         </div>
