@@ -104,7 +104,7 @@ yarn test
 
 ## 🌐 Deployment
 
-### This version of DevKit Pro (1.0.0) is Live on Vercel (https://vercel.com/syed-wamiqs-projects/devkit-pro)
+### This version of DevKit Pro (1.1.0) is Live on Vercel (https://vercel.com/syed-wamiqs-projects/devkit-pro)
 
 ## 🧩 Project Structure
 

@@ -29,11 +29,14 @@ export default function SettingsPage() {
     setFontSize
   } = useUserPreferences()
   
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, resolvedTheme } = useTheme()
   const [activeTab, setActiveTab] = useState("appearance")
   
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className={cn(
+      "max-w-4xl mx-auto",
+      resolvedTheme === 'blackwhite' && "font-mono"
+    )}>
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" asChild>
@@ -41,14 +44,23 @@ export default function SettingsPage() {
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-          <h1 className="text-2xl font-bold">Settings</h1>
+          <h1 className={cn(
+            "text-2xl font-bold",
+            resolvedTheme === 'blackwhite' && "font-mono"
+          )}>
+            {resolvedTheme === 'blackwhite' ? '> settings.config' : 'Settings'}
+          </h1>
         </div>
       </div>
       
       <Tabs defaultValue="appearance" value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="appearance">Appearance</TabsTrigger>
-          <TabsTrigger value="about">About</TabsTrigger>
+          <TabsTrigger value="appearance">
+            {resolvedTheme === 'blackwhite' ? 'appearance()' : 'Appearance'}
+          </TabsTrigger>
+          <TabsTrigger value="about">
+            {resolvedTheme === 'blackwhite' ? 'about()' : 'About'}
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="appearance" className="mt-6 space-y-6">
@@ -63,7 +75,7 @@ export default function SettingsPage() {
               <RadioGroup 
                 defaultValue={theme} 
                 onValueChange={(value) => setTheme(value)}
-                className="grid grid-cols-3 gap-4"
+                className="grid grid-cols-2 md:grid-cols-4 gap-4"
               >
                 <div>
                   <RadioGroupItem 
@@ -92,6 +104,21 @@ export default function SettingsPage() {
                   >
                     <Moon className="mb-3 h-6 w-6" />
                     Dark
+                  </Label>
+                </div>
+                
+                <div>
+                  <RadioGroupItem 
+                    value="blackwhite" 
+                    id="theme-blackwhite" 
+                    className="peer sr-only" 
+                  />
+                  <Label 
+                    htmlFor="theme-blackwhite"
+                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                  >
+                    <span className="mb-3 h-6 w-6 font-mono text-lg flex items-center justify-center font-bold">&lt;&gt;</span>
+                    dev.tsx
                   </Label>
                 </div>
                 
@@ -317,7 +344,7 @@ export default function SettingsPage() {
               </div>
               <div>
                 <h3 className="font-medium mb-1">Version</h3>
-                <p className="text-sm text-muted-foreground">1.0.0</p>
+                <p className="text-sm text-muted-foreground">1.1.0</p>
               </div>
               
               <div>

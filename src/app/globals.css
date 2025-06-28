@@ -12,16 +12,16 @@
     --popover-foreground: 222.2 84% 4.9%;
     --primary: 221.2 83.2% 53.3%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
+    --secondary: 0 0% 98%;
     --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
+    --muted: 0 0% 98%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
+    --accent: 0 0% 98%;
     --accent-foreground: 222.2 84% 4.9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --border: 214.3 31.8% 89%;
+    --input: 0 0% 96%;
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
   }
@@ -47,12 +47,35 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 94.1%;
   }
+
+  .blackwhite {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 0 0% 10%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 20%;
+    --input: 0 0% 10%;
+    --ring: 0 0% 100%;
+  }
 }
 
 @layer base {
   * {
     @apply border-border;
   }
+  
   body {
     @apply bg-background text-foreground;
     /* Prevent overscroll bounce effects */
@@ -61,6 +84,54 @@
     scroll-behavior: smooth;
     /* Prevent horizontal scrolling */
     overflow-x: hidden;
+  }
+  
+  /* Force white background for light theme */
+  html:not(.dark):not(.blackwhite) body,
+  html:not(.dark):not(.blackwhite) main,
+  html:not(.dark):not(.blackwhite) .bg-background,
+  html:not(.dark):not(.blackwhite) .bg-card,
+  html:not(.dark):not(.blackwhite) .bg-popover,
+  html:not(.dark):not(.blackwhite) .bg-secondary,
+  html:not(.dark):not(.blackwhite) .bg-muted,
+  html:not(.dark):not(.blackwhite) .bg-accent {
+    background-color: #ffffff !important;
+  }
+  
+  /* Ensure light theme cards and containers are white */
+  html:not(.dark):not(.blackwhite) [data-theme="light"] *,
+  html:not(.dark):not(.blackwhite) * {
+    --tw-bg-opacity: 1;
+  }
+  
+  html:not(.dark):not(.blackwhite) .bg-card {
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity)) !important;
+  }
+  
+  html:not(.dark):not(.blackwhite) .bg-background {
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity)) !important;
+  }
+  
+  /* Light theme specific overrides */
+  .light,
+  html:not(.dark):not(.blackwhite) {
+    --background: 0 0% 100% !important;
+    --card: 0 0% 100% !important;
+    --popover: 0 0% 100% !important;
+    --secondary: 0 0% 100% !important;
+    --muted: 0 0% 100% !important;
+    --accent: 0 0% 100% !important;
+  }
+  
+  /* Ensure sidebar and all containers are white in light theme */
+  html:not(.dark):not(.blackwhite) aside,
+  html:not(.dark):not(.blackwhite) nav,
+  html:not(.dark):not(.blackwhite) div,
+  html:not(.dark):not(.blackwhite) section,
+  html:not(.dark):not(.blackwhite) article,
+  html:not(.dark):not(.blackwhite) header,
+  html:not(.dark):not(.blackwhite) footer {
+    background-color: #ffffff;
   }
   
   /* Improve scrolling on mobile */
@@ -73,6 +144,21 @@
   @media (max-width: 768px) {
     button, a, input, select, textarea {
       @apply min-h-10 min-w-10;
+    }
+    
+    /* Improve mobile scrolling */
+    * {
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Prevent zoom on input focus */
+    input, select, textarea {
+      font-size: 16px;
+    }
+    
+    /* Improve tap highlighting */
+    * {
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
     }
   }
 }
@@ -210,5 +296,228 @@
       opacity: 1;
       transform: scale(1);
     }
+  }
+  
+  /* Floating button animations */
+  .floating-button {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(0);
+  }
+  
+  .floating-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  
+  .floating-button:active {
+    transform: translateY(0);
+  }
+  
+  /* Staggered animation for floating buttons */
+  .floating-buttons > *:nth-child(1) {
+    animation-delay: 0ms;
+  }
+  
+  .floating-buttons > *:nth-child(2) {
+    animation-delay: 100ms;
+  }
+  
+  .floating-buttons > *:nth-child(3) {
+    animation-delay: 200ms;
+  }
+  
+  .floating-buttons > *:nth-child(4) {
+    animation-delay: 300ms;
+  }
+  
+  /* Pulse animation for active states */
+  @keyframes pulse-soft {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+  
+  .animate-pulse-soft {
+    animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  /* Backdrop blur utilities */
+  .backdrop-blur-xs {
+    backdrop-filter: blur(2px);
+  }
+  
+  .backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+  }
+  
+  .backdrop-blur-md {
+    backdrop-filter: blur(8px);
+  }
+  
+  /* Glass morphism effect */
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .dark .glass-effect {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Black and White theme specific styles */
+  .blackwhite {
+    font-weight: 500;
+    background-color: #000000 !important;
+    color: #ffffff !important;
+  }
+  
+  .blackwhite * {
+    border-color: hsl(var(--border)) !important;
+  }
+  
+  /* Force black background and white text for all elements */
+  .blackwhite,
+  .blackwhite body,
+  .blackwhite main,
+  .blackwhite aside,
+  .blackwhite nav,
+  .blackwhite div,
+  .blackwhite section,
+  .blackwhite article,
+  .blackwhite header,
+  .blackwhite footer {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+  }
+  
+  /* Cards and containers */
+  .blackwhite .bg-card,
+  .blackwhite .bg-background,
+  .blackwhite .bg-popover,
+  .blackwhite .bg-secondary,
+  .blackwhite .bg-muted,
+  .blackwhite .bg-accent {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+  }
+  
+  /* Text elements */
+  .blackwhite h1,
+  .blackwhite h2,
+  .blackwhite h3,
+  .blackwhite h4,
+  .blackwhite h5,
+  .blackwhite h6,
+  .blackwhite p,
+  .blackwhite span,
+  .blackwhite a,
+  .blackwhite label,
+  .blackwhite li,
+  .blackwhite td,
+  .blackwhite th {
+    color: #ffffff !important;
+  }
+  
+  /* Muted text should be gray */
+  .blackwhite .text-muted-foreground,
+  .blackwhite .text-muted {
+    color: #888888 !important;
+  }
+  
+  /* Input fields */
+  .blackwhite input,
+  .blackwhite textarea,
+  .blackwhite select {
+    background-color: #111111 !important;
+    color: #ffffff !important;
+    border-color: #333333 !important;
+  }
+  
+  .blackwhite input::placeholder,
+  .blackwhite textarea::placeholder {
+    color: #666666 !important;
+  }
+  
+  /* Buttons */
+  .blackwhite button {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #ffffff !important;
+  }
+  
+  .blackwhite button:hover {
+    background-color: #cccccc !important;
+    color: #000000 !important;
+  }
+  
+  .blackwhite .bg-primary {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  
+  /* Ghost buttons */
+  .blackwhite button[data-variant="ghost"],
+  .blackwhite .variant-ghost {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+  }
+  
+  .blackwhite button[data-variant="ghost"]:hover,
+  .blackwhite .variant-ghost:hover {
+    background-color: #222222 !important;
+    color: #ffffff !important;
+  }
+  
+  /* Shadows for black theme */
+  .blackwhite .shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(255, 255, 255, 0.1), 0 4px 6px -2px rgba(255, 255, 255, 0.05) !important;
+  }
+  
+  .blackwhite .shadow-md {
+    box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06) !important;
+  }
+  
+  /* Borders */
+  .blackwhite .border,
+  .blackwhite .border-t,
+  .blackwhite .border-b,
+  .blackwhite .border-l,
+  .blackwhite .border-r {
+    border-color: #333333 !important;
+  }
+  
+  /* Techy monospace elements for blackwhite theme */
+  .blackwhite code,
+  .blackwhite pre,
+  .blackwhite .font-mono {
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace;
+    font-weight: 400;
+    background-color: #111111 !important;
+    color: #ffffff !important;
+    border: 1px solid #333333 !important;
+  }
+  
+  /* Logo filter for black and white theme */
+  .blackwhite img[src*="logo"] {
+    filter: brightness(0) saturate(100%) invert(100%) !important;
+  }
+  
+  /* Scrollbars */
+  .blackwhite ::-webkit-scrollbar {
+    background-color: #000000;
+  }
+  
+  .blackwhite ::-webkit-scrollbar-thumb {
+    background-color: #333333;
+  }
+  
+  .blackwhite ::-webkit-scrollbar-thumb:hover {
+    background-color: #555555;
   }
 }

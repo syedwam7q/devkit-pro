@@ -2,13 +2,11 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
-import { Sidebar } from '@/components/sidebar'
-import { Chatbot } from '@/components/chatbot'
-import { MobileNavigation } from '@/components/mobile-navigation'
-import { KeyboardShortcuts } from '@/components/keyboard-shortcuts'
+import { AppWrapper } from '@/components/app-wrapper'
 // We've removed the FavoritesHelper import
 
 const inter = Inter({ subsets: ['latin'] })
+
 
 export const metadata: Metadata = {
   title: 'DevKit Pro - Your Ultimate Developer Toolbox',
@@ -36,24 +34,25 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="DevKit Pro" />
+        <link rel="apple-touch-icon" href="/docs/logo/devkitproicon.png" />
+      </head>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
+          themes={['light', 'dark', 'blackwhite']}
         >
-          <div className="flex h-screen overflow-hidden">
-            <Sidebar />
-            <main className="flex-1 overflow-y-auto overflow-x-hidden md:ml-0">
-              <div className="container mx-auto p-4 md:p-6 pt-16 md:pt-6 pb-24 md:pb-6 min-h-full">
-                {children}
-              </div>
-            </main>
-            <Chatbot />
-            <MobileNavigation />
-            <KeyboardShortcuts />
-          </div>
+          <AppWrapper>
+            {children}
+          </AppWrapper>
         </ThemeProvider>
       </body>
     </html>

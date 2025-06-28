@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useUserPreferences } from "@/lib/store"
+import { FlowNotesSuggestion } from "@/components/flow-notes-suggestion"
 import {
   Type,
   Image,
@@ -31,7 +32,8 @@ import {
   ChevronDown,
   Home,
   FileIcon,
-  ScanText
+  ScanText,
+  NotebookPen
 } from "lucide-react"
 
 const tools = [
@@ -83,6 +85,7 @@ const tools = [
       { name: "QR Code Generator", href: "/qr-code-generator", icon: QrCode },
       { name: "SVG Generator", href: "/svg-generator", icon: Wand2 },
       { name: "Meme Generator", href: "/meme-generator", icon: Smile },
+      { name: "Flow Notes", href: "https://coming-soon-ten-roan.vercel.app/", icon: NotebookPen, external: true },
     ]
   }
 ]
@@ -195,6 +198,30 @@ export function Sidebar() {
                 <div className="space-y-1">
                   {category.items.map((item) => {
                     const Icon = item.icon
+                    const isExternal = (item as any).external
+                    
+                    if (isExternal) {
+                      return (
+                        <a
+                          key={item.href}
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setIsOpen(false)}
+                          className={cn(
+                            "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-accent hover:text-accent-foreground text-muted-foreground",
+                            fontSizeClasses[fontSize]
+                          )}
+                        >
+                          <Icon className="h-4 w-4" />
+                          {item.name}
+                          <svg className="h-3 w-3 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      )
+                    }
+                    
                     return (
                       <Link
                         key={item.href}
@@ -217,6 +244,9 @@ export function Sidebar() {
           ))}
         </div>
       </nav>
+      
+      {/* Flow Notes Suggestion Card */}
+      <FlowNotesSuggestion />
       
       <div className="p-4 border-t">
         <Link

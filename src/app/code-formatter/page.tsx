@@ -229,7 +229,7 @@ items = [
 
 print("Total: $" + str(calculate_total(items)))`,
 
-  json: `{"name":"DevKit Pro","version":"1.0.0","description":"A collection of developer tools","tools":[{"id":1,"name":"Code Formatter","category":"Developer Tools"},{"id":2,"name":"JSON Formatter","category":"Developer Tools"},{"id":3,"name":"Image Resizer","category":"Image Tools"}],"settings":{"theme":"dark","language":"en"}}`,
+  json: `{"name":"DevKit Pro","version":"1.1.0","description":"A collection of developer tools","tools":[{"id":1,"name":"Code Formatter","category":"Developer Tools"},{"id":2,"name":"JSON Formatter","category":"Developer Tools"},{"id":3,"name":"Image Resizer","category":"Image Tools"}],"settings":{"theme":"dark","language":"en"}}`,
 
   html: `<!DOCTYPE html><html><head><title>DevKit Pro</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="styles.css"></head><body><header><h1>DevKit Pro</h1><nav><ul><li><a href="/">Home</a></li><li><a href="/tools">Tools</a></li><li><a href="/about">About</a></li></ul></nav></header><main><section><h2>Welcome to DevKit Pro</h2><p>Your ultimate toolbox for development, design, and content creation.</p></section></main><footer><p>&copy; 2023 DevKit Pro</p></footer></body></html>`,
 

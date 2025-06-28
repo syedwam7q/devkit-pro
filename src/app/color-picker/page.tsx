@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Palette, Copy, History, Plus, Trash } from "lucide-react"
+import { useTheme } from "next-themes"
 
 // Color conversion utilities
 const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
@@ -203,6 +204,7 @@ export default function ColorPickerPage() {
   const [contrastColor, setContrastColor] = useState("#ffffff")
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const { resolvedTheme } = useTheme()
 
   // Check if EyeDropper API is supported
   useEffect(() => {
@@ -381,17 +383,26 @@ export default function ColorPickerPage() {
 
   return (
     <div className="space-y-6">
+      <style jsx global>{`
+        .color-display {
+          border: 2px solid ${resolvedTheme === 'blackwhite' ? '#ffffff' : 'hsl(var(--border))'} !important;
+        }
+        .color-swatch {
+          border: 1px solid ${resolvedTheme === 'blackwhite' ? '#ffffff' : 'hsl(var(--border))'} !important;
+        }
+      `}</style>
+      
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-primary/10 rounded-lg">
-          <Palette className="h-6 w-6 text-primary" />
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <Palette className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold">Color Picker</h1>
+            <p className="text-muted-foreground">
+              Select, analyze, and create color palettes
+            </p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-3xl font-bold">Color Picker</h1>
-          <p className="text-muted-foreground">
-            Select, analyze, and create color palettes
-          </p>
-        </div>
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
@@ -413,7 +424,7 @@ export default function ColorPickerPage() {
                 <TabsContent value="hex" className="space-y-4">
                   <div className="flex gap-4">
                     <div 
-                      className="w-16 h-16 rounded-md border"
+                      className="w-16 h-16 rounded-md color-display"
                       style={{ backgroundColor: color }}
                     />
                     <div className="flex-1">
@@ -458,7 +469,7 @@ export default function ColorPickerPage() {
                 <TabsContent value="rgb" className="space-y-4">
                   <div className="flex gap-4">
                     <div 
-                      className="w-16 h-16 rounded-md border"
+                      className="w-16 h-16 rounded-md color-display"
                       style={{ backgroundColor: color }}
                     />
                     <div className="flex-1">
@@ -520,7 +531,7 @@ export default function ColorPickerPage() {
                 <TabsContent value="hsl" className="space-y-4">
                   <div className="flex gap-4">
                     <div 
-                      className="w-16 h-16 rounded-md border"
+                      className="w-16 h-16 rounded-md color-display"
                       style={{ backgroundColor: color }}
                     />
                     <div className="flex-1">
@@ -644,7 +655,7 @@ export default function ColorPickerPage() {
                   <label className="text-sm font-medium">Background Color</label>
                   <div className="flex mt-1">
                     <div
-                      className="w-10 h-10 rounded-l-md border-y border-l"
+                      className="w-10 h-10 rounded-l-md color-display"
                       style={{ backgroundColor: color }}
                     />
                     <Input
@@ -671,7 +682,7 @@ export default function ColorPickerPage() {
                 </div>
               </div>
               
-              <div className="p-4 rounded-md border" style={{ backgroundColor: color }}>
+              <div className="p-4 rounded-md color-display" style={{ backgroundColor: color }}>
                 <p className="text-2xl font-bold" style={{ color: contrastColor }}>
                   Sample Text
                 </p>

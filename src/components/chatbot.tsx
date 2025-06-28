@@ -217,7 +217,7 @@ export function Chatbot() {
   ])
   const [inputValue, setInputValue] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [lastSuggestion, setLastSuggestion] = useState<{path?: string, toolName?: string} | null>(null)
+
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
@@ -284,29 +284,8 @@ export function Chatbot() {
     setInputValue("")
     setIsLoading(true)
 
-    // Check if this is an affirmative response to a previous suggestion
-    const isAffirmative = /^(yes|yeah|yep|sure|ok|okay|yup|y|take me there|go there|navigate|show me|open it|let's go|proceed|continue|go ahead|do it)$/i.test(userInput)
-    
-    if (isAffirmative && lastSuggestion && lastSuggestion.path) {
-      // User is responding affirmatively to a previous suggestion
-      const assistantMessage: Message = {
-        id: `assistant-${Date.now()}`,
-        role: "assistant",
-        content: `Taking you to ${lastSuggestion.toolName || "the requested page"}...`,
-        timestamp: new Date()
-      }
-
-      setMessages(prev => [...prev, assistantMessage])
-      setIsLoading(false)
-      setLastSuggestion(null)
-
-      // Navigate to the suggested path
-      setTimeout(() => {
-        router.push(lastSuggestion.path!)
-      }, 1000)
-    } else {
-      // Process the message and generate a new response
-      setTimeout(() => {
+    // Process the message and generate a new response
+    setTimeout(() => {
         const response = generateResponse(userInput)
         
         const assistantMessage: Message = {
@@ -319,21 +298,7 @@ export function Chatbot() {
         setMessages(prev => [...prev, assistantMessage])
         setIsLoading(false)
 
-        // Update last suggestion if this is a suggestion
-        if (response.action === "suggest" && response.path) {
-          // Extract tool name from the message
-          let toolName: string | undefined = undefined
-          for (const tool of toolInfo) {
-            if (response.path === tool.path) {
-              toolName = tool.name
-              break
-            }
-          }
-          setLastSuggestion({ path: response.path, toolName })
-        } else {
-          // Clear last suggestion if this is not a suggestion
-          setLastSuggestion(null)
-        }
+
 
         // If there's a navigation action, perform it after a short delay
         if (response.action === "navigate" && response.path) {
@@ -342,7 +307,6 @@ export function Chatbot() {
           }, 1000)
         }
       }, 600) // Simulate processing time
-    }
   }
 
   const generateResponse = (userInput: string): { message: string, action?: string, path?: string } => {
@@ -374,8 +338,8 @@ export function Chatbot() {
         // If asking what a tool does
         if (input.includes("what") || input.includes("do") || input.includes("about") || input.includes("explain")) {
           return { 
-            message: `The ${tool.name} is a tool that ${tool.description}. Would you like to try it out?`,
-            action: "suggest",
+            message: `The ${tool.name} is a tool that ${tool.description}. Taking you there now!`,
+            action: "navigate",
             path: tool.path
           }
         }
@@ -401,8 +365,8 @@ export function Chatbot() {
         
         // Default response for tool mention
         return { 
-          message: `The ${tool.name} allows you to ${tool.description}. Would you like me to take you there?`,
-          action: "suggest",
+          message: `The ${tool.name} allows you to ${tool.description}. Taking you there now!`,
+          action: "navigate",
           path: tool.path
         }
       }
@@ -411,22 +375,25 @@ export function Chatbot() {
     // Check for category-based inquiries
     if (input.includes("text tool") || (input.includes("text") && input.includes("tool"))) {
       return {
-        message: "We have several text tools: Text Formatter for changing text case and format, Word Counter for analyzing text statistics, and Markdown Editor for creating formatted documents. Which one would you like to use?",
-        action: "suggest"
+        message: "We have several text tools: Text Formatter for changing text case and format, Word Counter for analyzing text statistics, and Markdown Editor for creating formatted documents. Let me take you to the Text Formatter to get started!",
+        action: "navigate",
+        path: "/text-formatter"
       }
     }
 
     if (input.includes("image tool") || (input.includes("image") && input.includes("tool"))) {
       return {
-        message: "Our image tools include: Image Resizer for changing dimensions, Image Compressor for reducing file size, Image Converter for changing formats, and Color Picker for working with colors. Which one interests you?",
-        action: "suggest"
+        message: "Our image tools include: Image Resizer for changing dimensions, Image Compressor for reducing file size, Image Converter for changing formats, and Color Picker for working with colors. Let me take you to the Image Resizer to get started!",
+        action: "navigate",
+        path: "/image-resizer"
       }
     }
 
     if (input.includes("developer tool") || input.includes("dev tool") || (input.includes("developer") && input.includes("tool"))) {
       return {
-        message: "Our developer tools include: JSON Formatter, Regex Tester, Base64 Encoder, UUID Generator, JWT Decoder, and URL Parser. What are you trying to accomplish?",
-        action: "suggest"
+        message: "Our developer tools include: JSON Formatter, Regex Tester, Base64 Encoder, UUID Generator, JWT Decoder, and URL Parser. Let me take you to the JSON Formatter to get started!",
+        action: "navigate",
+        path: "/json-formatter"
       }
     }
 
@@ -474,22 +441,25 @@ export function Chatbot() {
     // Check for general task inquiries
     if (input.includes("image") && (input.includes("edit") || input.includes("modify"))) {
       return { 
-        message: "For image editing, we have several tools: Image Resizer, Image Compressor, and Image Converter. What specifically would you like to do with your image?",
-        action: "suggest"
+        message: "For image editing, we have several tools: Image Resizer, Image Compressor, and Image Converter. Let me take you to the Image Resizer to get started!",
+        action: "navigate",
+        path: "/image-resizer"
       }
     }
 
     if (input.includes("text") && (input.includes("edit") || input.includes("modify") || input.includes("format"))) {
       return { 
-        message: "For text editing, you might want to try our Text Formatter, Markdown Editor, or Word Counter. What kind of text editing do you need to do?",
-        action: "suggest"
+        message: "For text editing, you might want to try our Text Formatter, Markdown Editor, or Word Counter. Let me take you to the Text Formatter to get started!",
+        action: "navigate",
+        path: "/text-formatter"
       }
     }
 
     if (input.includes("code") || input.includes("json") || input.includes("regex")) {
       return { 
-        message: "For code-related tasks, we have the Code Formatter, JSON Formatter, and Regex Tester. Which one would be most helpful for your current task?",
-        action: "suggest"
+        message: "For code-related tasks, we have the Code Formatter, JSON Formatter, and Regex Tester. Let me take you to the JSON Formatter to get started!",
+        action: "navigate",
+        path: "/json-formatter"
       }
     }
 
@@ -550,8 +520,9 @@ export function Chatbot() {
         }
       }
       return {
-        message: "We have tools for encoding and decoding data, including Base64 Encoder and JWT Decoder. Which one would you like to use?",
-        action: "suggest"
+        message: "We have tools for encoding and decoding data, including Base64 Encoder and JWT Decoder. Let me take you to the Base64 Encoder to get started!",
+        action: "navigate",
+        path: "/base64-encoder"
       }
     }
 
@@ -621,74 +592,59 @@ export function Chatbot() {
     setIsMinimized(prev => !prev)
   }
 
-  // Track if the virtual keyboard is open
-  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  
-  // Add event listeners for input focus/blur to detect keyboard
-  useEffect(() => {
-    const handleFocus = () => setIsKeyboardOpen(true);
-    const handleBlur = () => setIsKeyboardOpen(false);
-    
-    const inputElement = inputRef.current;
-    if (inputElement) {
-      inputElement.addEventListener('focus', handleFocus);
-      inputElement.addEventListener('blur', handleBlur);
-      
-      return () => {
-        inputElement.removeEventListener('focus', handleFocus);
-        inputElement.removeEventListener('blur', handleBlur);
-      };
-    }
-  }, [isOpen]);
+
   
   return (
     <>
-      {/* Chat button - hidden on mobile since we use the bottom nav */}
+      {/* Chat button - Works on both desktop and mobile */}
       <Button
-        className="fixed bottom-4 right-4 rounded-full h-12 w-12 p-0 shadow-lg md:flex hidden bg-background/80 backdrop-blur-sm border-2 hover:bg-background/90 transition-all duration-300"
+        className="fixed bottom-6 right-6 rounded-full h-12 w-12 p-0 shadow-lg bg-background/80 backdrop-blur-md border border-border/50 hover:bg-background/90 hover:border-border transition-all duration-300 z-50"
         onClick={toggleChat}
         title={`${isOpen ? 'Close' : 'Open'} chat (Ctrl+J)`}
         aria-label={`${isOpen ? 'Close' : 'Open'} chat`}
       >
         {isOpen ? (
-          <X className="h-5 w-5" />
+          <X className="h-5 w-5 text-muted-foreground" />
         ) : (
           <div className="relative">
             <img 
               src="/docs/logo/devkitlogo.png" 
               alt="DevKit Pro Assistant" 
-              className="h-6 w-6 object-contain transition-all duration-300"
-              style={{
-                filter: theme === 'light' 
-                  ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(200deg) brightness(104%) contrast(97%)'
-                  : 'none'
-              }}
+              className="h-6 w-6 object-contain transition-all duration-300 opacity-80 hover:opacity-100"
             />
-            <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-background animate-pulse" />
+            <div className="absolute -top-0.5 -right-0.5 h-2 w-2 bg-green-500 rounded-full animate-pulse" />
           </div>
         )}
       </Button>
 
-      {/* Chat window - optimized for mobile */}
+      {/* Chat window - popup style for both desktop and mobile */}
       {isOpen && (
-        <Card className={`fixed transition-all duration-300 shadow-xl z-50 ${
-          // Different positioning for mobile vs desktop
-          'md:bottom-20 md:right-4 md:w-96 md:max-h-[calc(100vh-8rem)]' +
-          // On mobile, make it larger and positioned from bottom
-          ' w-full mx-auto max-w-[640px] rounded-b-none rounded-t-xl'
+        <Card className={`fixed z-40 ${
+          // Responsive positioning - popup style
+          'bottom-20 right-6 w-96 max-w-[calc(100vw-3rem)] rounded-xl border shadow-lg'
         } ${
           // Height control based on minimized state
-          isMinimized ? 'h-14' : 'md:h-96'
+          isMinimized ? 'h-14' : 'h-96 max-h-[calc(100vh-8rem)]'
         } ${
-          // Mobile positioning - adjust when keyboard is open
-          isKeyboardOpen 
-            ? 'bottom-0 h-[50vh]' // When keyboard is open, take half the viewport height
-            : 'bottom-16 h-[calc(100vh-8rem)]' // Normal height when keyboard is closed
+          // Simplified styling
+          'bg-background border-border'
         }`}>
-          <CardHeader className="p-3 border-b flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-medium">DevKit Pro Assistant</CardTitle>
-            <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" onClick={toggleMinimize} className="h-8 w-8 md:flex hidden">
+          <CardHeader className="p-3 border-b border-border flex flex-row items-center justify-between bg-background sticky top-0 z-10">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <img 
+                  src="/docs/logo/devkitlogo.png" 
+                  alt="DevKit Pro Assistant" 
+                  className="h-6 w-6 object-contain opacity-90"
+                />
+                <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full animate-pulse" />
+              </div>
+              <div>
+                <CardTitle className="text-sm font-semibold text-foreground">DevKit Pro Assistant</CardTitle>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="icon" onClick={toggleMinimize} className="h-8 w-8 hover:bg-muted/50">
                 {isMinimized ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
               </Button>
               <Button 
@@ -698,7 +654,7 @@ export function Chatbot() {
                   setIsOpen(false)
                   window.dispatchEvent(new CustomEvent('chatbot-closed'))
                 }} 
-                className="h-8 w-8"
+                className="h-8 w-8 hover:bg-muted/50"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -707,37 +663,35 @@ export function Chatbot() {
           
           {!isMinimized && (
             <>
-              <CardContent className={`p-3 overflow-y-auto ${
-                isKeyboardOpen 
-                  ? 'h-[calc(50vh-7rem)]' // Adjust height when keyboard is open
-                  : 'h-[calc(100%-7rem)] md:h-[calc(100%-7rem)]'
-              }`}>
-                <div className="space-y-4">
+              <CardContent className="p-3 overflow-y-auto h-[calc(100%-7rem)]">
+                <div className="space-y-3">
                   {messages.map(message => (
                     <div
                       key={message.id}
                       className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                     >
                       <div
-                        className={`max-w-[80%] rounded-lg px-3 py-2 ${
+                        className={`max-w-[80%] rounded-xl px-3 py-2 ${
                           message.role === "user"
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted"
+                            ? "bg-primary text-primary-foreground ml-4"
+                            : "bg-muted mr-4 border border-border"
                         }`}
                       >
-                        <p className="text-sm whitespace-pre-line">{message.content}</p>
-                        <p className="text-xs opacity-70 mt-1">
-                          {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        <p className="text-sm whitespace-pre-line leading-relaxed">{message.content}</p>
+                        <p className="text-xs opacity-60 mt-1 flex items-center gap-1">
+                          <span>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                          {message.role === "user" && <span>•</span>}
+                          {message.role === "user" && <span>You</span>}
                         </p>
                       </div>
                     </div>
                   ))}
                   {isLoading && (
                     <div className="flex justify-start">
-                      <div className="max-w-[80%] rounded-lg px-3 py-2 bg-muted">
+                      <div className="max-w-[80%] rounded-xl px-3 py-2 bg-muted mr-4 border border-border">
                         <div className="flex items-center space-x-2">
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          <p className="text-sm">Thinking...</p>
+                          <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                          <span className="text-sm text-muted-foreground">Typing...</span>
                         </div>
                       </div>
                     </div>
@@ -746,23 +700,29 @@ export function Chatbot() {
                 </div>
               </CardContent>
               
-              <CardFooter className="p-3 pt-0 border-t">
-                <form onSubmit={handleSubmit} className="flex w-full gap-2">
-                  <Input
-                    ref={inputRef}
-                    value={inputValue}
-                    onChange={e => setInputValue(e.target.value)}
-                    placeholder="Ask me anything..."
-                    className="flex-1 bg-background"
-                    disabled={isLoading}
-                  />
+              <CardFooter className="p-3 border-t border-border bg-background sticky bottom-0">
+                <form onSubmit={handleSubmit} className="flex w-full gap-2 items-end">
+                  <div className="flex-1 relative">
+                    <Input
+                      ref={inputRef}
+                      value={inputValue}
+                      onChange={e => setInputValue(e.target.value)}
+                      placeholder="Ask me anything..."
+                      className="bg-muted border-border h-10 text-sm rounded-md px-3 focus:border-primary"
+                      disabled={isLoading}
+                    />
+                  </div>
                   <Button 
                     type="submit" 
                     size="icon" 
                     disabled={isLoading || !inputValue.trim()}
-                    className="bg-primary hover:bg-primary/90"
+                    className="h-10 w-10 rounded-md bg-primary hover:bg-primary/90"
                   >
-                    <Send className="h-4 w-4" />
+                    {isLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Send className="h-4 w-4" />
+                    )}
                   </Button>
                 </form>
               </CardFooter>
@@ -770,6 +730,8 @@ export function Chatbot() {
           )}
         </Card>
       )}
+
+
     </>
   )
 }

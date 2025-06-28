@@ -304,6 +304,8 @@ export function CustomizableDashboard({ categories }: { categories: any[] }) {
                   style={{
                     filter: theme === 'light' 
                       ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(200deg) brightness(104%) contrast(97%)'
+                      : theme === 'blackwhite'
+                      ? 'brightness(0) saturate(100%) invert(100%)'
                       : 'none'
                   }}
                 />
@@ -311,19 +313,36 @@ export function CustomizableDashboard({ categories }: { categories: any[] }) {
             </div>
           </div>
           
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-700 dark:from-blue-400 dark:via-cyan-300 dark:to-blue-500 pb-1 drop-shadow-sm">
-            Welcome to DevKit Pro
+          <h1 className={`text-3xl md:text-5xl font-bold tracking-tight pb-1 drop-shadow-sm ${
+            theme === 'blackwhite' 
+              ? 'text-white font-mono' 
+              : 'bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-700 dark:from-blue-400 dark:via-cyan-300 dark:to-blue-500'
+          }`}>
+            {theme === 'blackwhite' ? '> DevKit Pro_' : 'Welcome to DevKit Pro'}
           </h1>
-          <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto leading-relaxed">
-            Your ultimate toolbox for development, design, and content creation. 
-            <span className="text-blue-600 dark:text-blue-400 font-medium"> Fast, free, and works entirely in your browser.</span>
+          <p className={`text-lg md:text-xl max-w-3xl mx-auto leading-relaxed ${
+            theme === 'blackwhite' 
+              ? 'text-gray-300 font-mono' 
+              : 'text-foreground/80'
+          }`}>
+            {theme === 'blackwhite' 
+              ? '// Your ultimate developer toolbox\n// Fast, free, and works entirely in your browser.' 
+              : <>
+                  Your ultimate toolbox for development, design, and content creation. 
+                  <span className="text-blue-600 dark:text-blue-400 font-medium"> Fast, free, and works entirely in your browser.</span>
+                </>
+            }
           </p>
           
           <div className="pt-4">
-            <Button asChild size="lg" className="rounded-full px-8 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 border-0 transition-all duration-300">
+            <Button asChild size="lg" className={`rounded-full px-8 py-3 transition-all duration-300 ${
+              theme === 'blackwhite'
+                ? 'bg-white text-black hover:bg-gray-200 border border-white font-mono'
+                : 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 border-0'
+            }`}>
               <Link href="/settings" className="flex items-center justify-center">
                 <Settings className="h-5 w-5 mr-2" />
-                Customize Your Experience
+                {theme === 'blackwhite' ? '> customize_experience()' : 'Customize Your Experience'}
               </Link>
             </Button>
           </div>

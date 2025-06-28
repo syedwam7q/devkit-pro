@@ -85,8 +85,4 @@ Implementation: JavaScript Math functions to generate SVG <path> data. No librar
 Meme Generator:
 Description: Upload an image, add draggable top/bottom text, and download the resulting meme image.
 Implementation: The Konva.js library for interactive canvas elements.
-Deployment Strategy
-Version Control: Host the project code in a GitHub (or GitLab/Bitbucket) repository.
-Hosting Platform: Connect the repository to Vercel.
-Deployment: Vercel will automatically detect the Next.js project, configure the build settings, and deploy the site. Every git push to the main branch will trigger a new, seamless deployment.
-Cost: $0. The entire stack and deployment strategy fits within the generous limits of Vercel's free "Hobby" plan.
+
