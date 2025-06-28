@@ -598,21 +598,40 @@ export function Chatbot() {
     <>
       {/* Chat button - Works on both desktop and mobile */}
       <Button
+<<<<<<< HEAD
         className="fixed bottom-6 right-6 rounded-full h-12 w-12 p-0 shadow-lg bg-background/80 backdrop-blur-md border border-border/50 hover:bg-background/90 hover:border-border transition-all duration-300 z-50"
+=======
+        className="fixed bottom-4 right-4 rounded-full h-12 w-12 p-0 shadow-lg md:flex hidden bg-background/80 backdrop-blur-sm border-2 hover:bg-background/90 transition-all duration-300"
+>>>>>>> 56832a6eccef7a436367349591657dacaeb06349
         onClick={toggleChat}
         title={`${isOpen ? 'Close' : 'Open'} chat (Ctrl+J)`}
         aria-label={`${isOpen ? 'Close' : 'Open'} chat`}
       >
         {isOpen ? (
+<<<<<<< HEAD
           <X className="h-5 w-5 text-muted-foreground" />
+=======
+          <X className="h-5 w-5" />
+>>>>>>> 56832a6eccef7a436367349591657dacaeb06349
         ) : (
           <div className="relative">
             <img 
               src="/docs/logo/devkitlogo.png" 
               alt="DevKit Pro Assistant" 
+<<<<<<< HEAD
               className="h-6 w-6 object-contain transition-all duration-300 opacity-80 hover:opacity-100"
             />
             <div className="absolute -top-0.5 -right-0.5 h-2 w-2 bg-green-500 rounded-full animate-pulse" />
+=======
+              className="h-6 w-6 object-contain transition-all duration-300"
+              style={{
+                filter: theme === 'light' 
+                  ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(200deg) brightness(104%) contrast(97%)'
+                  : 'none'
+              }}
+            />
+            <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-background animate-pulse" />
+>>>>>>> 56832a6eccef7a436367349591657dacaeb06349
           </div>
         )}
       </Button>
