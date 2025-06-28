@@ -33,7 +33,8 @@ import {
   Home,
   FileIcon,
   ScanText,
-  NotebookPen
+  NotebookPen,
+  Grid3X3
 } from "lucide-react"
 
 const tools = [
@@ -160,7 +161,7 @@ export function Sidebar() {
       <nav className="flex-1 overflow-y-auto p-4">
         <div className="space-y-5">
           {/* Home link */}
-          <div>
+          <div className="space-y-1">
             <Link
               href="/"
               onClick={() => setIsOpen(false)}
@@ -172,6 +173,18 @@ export function Sidebar() {
             >
               <Home className="h-4 w-4" />
               Dashboard
+            </Link>
+            <Link
+              href="/tools"
+              onClick={() => setIsOpen(false)}
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-accent hover:text-accent-foreground",
+                pathname === "/tools" ? "bg-accent text-accent-foreground" : "text-muted-foreground",
+                fontSizeClasses[fontSize]
+              )}
+            >
+              <Grid3X3 className="h-4 w-4" />
+              Tools Explorer
             </Link>
           </div>
 
@@ -248,7 +261,7 @@ export function Sidebar() {
       {/* Flow Notes Suggestion Card */}
       <FlowNotesSuggestion />
       
-      <div className="p-4 border-t">
+      <div className="p-4 border-t mt-auto">
         <Link
           href="/settings"
           onClick={() => setIsOpen(false)}
@@ -262,34 +275,32 @@ export function Sidebar() {
           Settings
         </Link>
         
-        <div className="text-xs text-muted-foreground">
-          <div className="flex flex-col space-y-1">
-            <div className="flex items-center">
-              <span>Developed by:</span>
-              <a 
-                href="https://my-portfolio-eight-rust-75.vercel.app" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="ml-1 hover:text-foreground transition-colors hover:underline"
-              >
-                Syed Wamiq
-              </a>
-            </div>
-            <div className="flex items-center gap-2">
-              <a 
-                href="https://github.com/syedwam7q" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center hover:text-foreground transition-colors"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                </svg>
-                github.com/syedwam7q
-              </a>
-            </div>
-            <p>© {new Date().getFullYear()} DevKit Pro</p>
+        <div className="text-xs text-muted-foreground space-y-1">
+          <div className="flex flex-wrap items-center gap-1">
+            <span>Developed by:</span>
+            <a 
+              href="https://my-portfolio-eight-rust-75.vercel.app" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-foreground transition-colors hover:underline"
+            >
+              Syed Wamiq
+            </a>
           </div>
+          <div className="flex items-center">
+            <a 
+              href="https://github.com/syedwam7q" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center hover:text-foreground transition-colors text-xs"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+              </svg>
+              GitHub
+            </a>
+          </div>
+          <p>© {new Date().getFullYear()} DevKit Pro</p>
         </div>
       </div>
     </div>

@@ -12,7 +12,8 @@ import { useUserPreferences } from "@/lib/store"
 import { 
   Settings, 
   ArrowRight,
-  ChevronDown
+  ChevronDown,
+  Grid3X3
 } from "lucide-react"
 import { cn, getDensityClasses } from "@/lib/utils"
 import { getToolsByCategory } from "@/lib/tool-routes"
@@ -334,7 +335,7 @@ export function CustomizableDashboard({ categories }: { categories: any[] }) {
             }
           </p>
           
-          <div className="pt-4">
+          <div className="pt-4 space-y-3">
             <Button asChild size="lg" className={`rounded-full px-8 py-3 transition-all duration-300 ${
               theme === 'blackwhite'
                 ? 'bg-white text-black hover:bg-gray-200 border border-white font-mono'
@@ -345,6 +346,20 @@ export function CustomizableDashboard({ categories }: { categories: any[] }) {
                 {theme === 'blackwhite' ? '> customize_experience()' : 'Customize Your Experience'}
               </Link>
             </Button>
+            
+            <div className="flex justify-center">
+              <Button asChild variant="ghost" size="sm" className={`text-sm ${
+                theme === 'blackwhite' 
+                  ? 'text-gray-300 hover:text-white font-mono' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}>
+                <Link href="/tools" className="flex items-center gap-2">
+                  <Grid3X3 className="h-4 w-4" />
+                  {theme === 'blackwhite' ? '> explore_all_tools()' : 'Explore All Tools'}
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
