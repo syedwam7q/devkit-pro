@@ -49,7 +49,7 @@ export default function HomePage() {
             <div className="flex items-center">
               <span>Developed by:</span>
               <a 
-                href="https://my-portfolio-eight-rust-75.vercel.app" 
+                href="http://syedwamiq.framer.website" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="ml-2 flex items-center hover:text-foreground transition-colors"
