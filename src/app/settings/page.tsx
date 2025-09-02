@@ -351,7 +351,7 @@ export default function SettingsPage() {
                 <h3 className="font-medium mb-1">Developer</h3>
                 <p className="text-sm text-muted-foreground">
                   <a 
-                    href="https://my-portfolio-eight-rust-75.vercel.app" 
+                    href="http://syedwamiq.framer.website" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-primary hover:underline"
