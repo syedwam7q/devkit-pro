@@ -289,7 +289,7 @@ export function Sidebar() {
           <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-1">
             <span className="whitespace-nowrap">Developed by:</span>
             <a 
-              href="https://my-portfolio-eight-rust-75.vercel.app" 
+              href="http://syedwamiq.framer.website" 
               target="_blank" 
               rel="noopener noreferrer"
               className="hover:text-foreground transition-colors hover:underline break-words"
